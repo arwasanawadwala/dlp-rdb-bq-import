@@ -79,15 +79,16 @@ public class TableToDbRowFn extends DoFn<SqlTable, KV<SqlTable, List<DbRow>>> {
             statement = connection.createStatement();
             String query =
                 String.format(
-                    "SELECT * FROM %s.%s ORDER BY %s OFFSET %d * (%d - 1) "
-                        + "ROWS FETCH NEXT %d ROWS ONLY",
+//                    "SELECT * FROM %s.%s ORDER BY %s OFFSET %d * (%d - 1) "
+//                        + "ROWS FETCH NEXT %d ROWS ONLY",
+                    "SELECT * FROM %s.%s ORDER BY %s LIMIT %d "
+                        + "OFFSET %d",
                     msSqlTable.getSchema(),
                     msSqlTable.getName(),
                     primaryKey,
                     this.offsetCount.get(),
-                    i,
-                    this.offsetCount.get());
-            LOG.debug("Executing query: " + query);
+                    this.offsetCount.get()*(i - 1));
+            LOG.info("Executing query: " + query);
 
             statement.executeQuery(query);
             ResultSet rs = statement.executeQuery(query);

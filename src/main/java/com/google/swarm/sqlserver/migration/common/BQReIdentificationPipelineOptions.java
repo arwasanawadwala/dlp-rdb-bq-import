@@ -13,7 +13,7 @@ public interface BQReIdentificationPipelineOptions extends DataflowPipelineOptio
 
   @Description("Query to execute")
   @Default.String(
-      "select id,card_number,Card_Holders_Name from `s3-dlp-experiment.pii_dataset.CCRecords_*` where cast(credit_limit as int64)>100000 and cast (age as int64) > 50 group by id,card_number,Card_Holders_Name")
+      "SELECT age FROM `sookplatformspikes.spike_dlp_oesc_mysql_migration.oesc_on_prem_patient`")
   String getQuery();
 
   void setQuery(String value);

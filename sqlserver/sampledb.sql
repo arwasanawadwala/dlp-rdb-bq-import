@@ -12,17 +12,17 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-CREATE TABLE dbo.medication (
+CREATE TABLE oesc_on_prem.medication (
 	record_id int NOT NULL,
 	patient_id int NOT NULL,
 	date_time datetime NULL,
 	medication varchar(50) NULL
 );
 
-ALTER TABLE dbo.medication ADD CONSTRAINT PK__medicati__BFCFB4DDE61EC2F5 PRIMARY KEY (record_id);
+ALTER TABLE oesc_on_prem.medication ADD CONSTRAINT PK__medicati__BFCFB4DDE61EC2F5 PRIMARY KEY (record_id);
 
 -- Add 1000 rows for medication.
-INSERT INTO medication (record_id, patient_id, date_time, medication) VALUES 
+INSERT INTO medication (record_id, patient_id, date_time, medication) VALUES
 (1,1,'2018-06-20 00:00:00','t'),
 (2,2,'2018-06-23 00:00:00','r'),
 (3,3,'2018-09-09 00:00:00','a'),
@@ -1024,16 +1024,16 @@ INSERT INTO medication (record_id, patient_id, date_time, medication) VALUES
 (999,999,'2018-10-11 00:00:00','m'),
 (1000,1000,'2018-01-04 00:00:00','d');
 
-CREATE TABLE dbo.patient (
+CREATE TABLE oesc_on_prem.patient (
 	name varchar(50) NOT NULL,
 	age int NULL,
 	patient_id int NOT NULL
 );
 
-ALTER TABLE dbo.patient ADD CONSTRAINT PK__patient__4D5CE4762D5A289B PRIMARY KEY (patient_id);
+ALTER TABLE oesc_on_prem.patient ADD CONSTRAINT PK__patient__4D5CE4762D5A289B PRIMARY KEY (patient_id);
 
 -- Add 1001 rows for patient.
-INSERT INTO patient (name, age, patient_id) VALUES 
+INSERT INTO patient (name, age, patient_id) VALUES
 ('Maiga',45,1),
 ('Rafaellle',28,2),
 ('Archy',52,3),
@@ -2035,10 +2035,10 @@ INSERT INTO patient (name, age, patient_id) VALUES
 ('Zachary',55,999),
 ('Jacquenetta',39,1000);
 
-INSERT INTO patient (name, age, patient_id) VALUES 
+INSERT INTO patient (name, age, patient_id) VALUES
 ('test',NULL,1001);
 
-CREATE TABLE dbo.patientleave (
+CREATE TABLE oesc_on_prem.patientleave (
 	record_id int NOT NULL,
 	patient_id int NOT NULL,
 	date_time datetime NULL,
@@ -2047,10 +2047,10 @@ CREATE TABLE dbo.patientleave (
 	sign_by varchar(50) NULL
 );
 
-ALTER TABLE dbo.patientleave ADD CONSTRAINT PK__patientl__BFCFB4DDF69BF41E PRIMARY KEY (record_id);
+ALTER TABLE oesc_on_prem.patientleave ADD CONSTRAINT PK__patientl__BFCFB4DDF69BF41E PRIMARY KEY (record_id);
 
 -- Add 1000 rows for patientleave.
-INSERT INTO patientleave (record_id, patient_id, date_time, in_out, reason, sign_by) VALUES 
+INSERT INTO patientleave (record_id, patient_id, date_time, in_out, reason, sign_by) VALUES
 (1,1,'2018-03-02 00:00:00','Place','fever. phone number: 6477803777','hasan'),
 (2,2,'2018-07-11 00:00:00','Junction','fever. phone number: 6477803777','hasan'),
 (3,3,'2018-07-02 00:00:00','Point','fever. phone number: 6477803777','hasan'),
