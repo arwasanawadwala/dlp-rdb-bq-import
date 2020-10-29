@@ -1,0 +1,53 @@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+traditional
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+./gradlew run -Pargs="
+--project=sookplatformspikes
+--runner=DirectRunner
+--dataSet=spike_dlp_oesc_mysql_migration
+--JDBCSpec=jdbc:mysql://(host=localhost,port=3306,user=root,password=password)/oesc_on_prem?encrypt=true&trustServerCertificate=true
+--tempLocation=gs://spike_oesc/spike_dpl_template_oesc.json
+--offsetCount=500
+--DLPConfigBucket=spike_oesc
+--DLPConfigObject=spike_dpl_template_oesc.json"
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+without encryption
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+./gradlew run -Pargs="
+--project=sookplatformspikes
+--runner=DirectRunner
+--dataSet=spike_dlp_oesc_mysql_migration
+--JDBCSpec=jdbc:mysql://(host=localhost,port=3306,user=root,password=password)/oesc_on_prem
+--tempLocation=gs://spike_oesc/spike_dpl_template_oesc.json
+--offsetCount=500
+--DLPConfigBucket=spike_oesc
+--DLPConfigObject=spike_dpl_template_oesc.json"
+
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+intellij params
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+--project=sookplatformspikes
+--runner=DirectRunner
+--dataSet=spike_dlp_oesc_mysql_migration
+--JDBCSpec=jdbc:mysql://(host=localhost,port=3306,user=root,password=password)/oesc_on_prem?encrypt=true&trustServerCertificate=true
+--tempLocation=gs://spike_oesc/spike_dpl_template_oesc.json
+--offsetCount=500
+--DLPConfigBucket=spike_oesc
+--DLPConfigObject=spike_dpl_template_oesc.json
+
+
+#############################################################################################################################################
+
+gradle run -Pargs="
+--project=sookplatformspikes
+--runner=DataflowRunner
+--dataSet=spike_dlp_oesc_mysql_migration
+--tempLocation=gs://spike_oesc/dlp-re-id/
+--topic=projects/sookplatformspikes/topics/bq-reid-data
+--subnetwork=https://www.googleapis.com/compute/v1/projects/sookplatformspikes/regions/us-central1/subnetworks/sook
+--deidentifyTemplateName=projects/sookplatformspikes/locations/global/deidentifyTemplates/6789
+--inspectTemplateName=projects/sookplatformspikes/locations/global/inspectTemplates/inspect_template
