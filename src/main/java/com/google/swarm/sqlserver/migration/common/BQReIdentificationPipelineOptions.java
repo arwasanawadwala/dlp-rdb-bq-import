@@ -13,7 +13,7 @@ public interface BQReIdentificationPipelineOptions extends DataflowPipelineOptio
 
   @Description("Query to execute")
   @Default.String(
-      "SELECT age FROM `sookplatformspikes.spike_dlp_oesc_mysql_migration.oesc_on_prem_patient`")
+      "SELECT name FROM `sookplatformspikes.spike_dlp_oesc_mysql_migration.oesc_on_prem_patient`")
   String getQuery();
 
   void setQuery(String value);
@@ -37,4 +37,9 @@ public interface BQReIdentificationPipelineOptions extends DataflowPipelineOptio
   String getColumnMap();
 
   void setColumnMap(String value);
+
+  @Description("Gcs Bucket to write decrypted data")
+  String getGcsBucket();
+
+  void setGcsBucket(String value);
 }

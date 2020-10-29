@@ -42,6 +42,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.PipelineResult;
+import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.TypedRead.Method;
 import org.apache.beam.sdk.io.gcp.pubsub.PubsubIO;
@@ -121,12 +122,13 @@ public class BQReidentificationPipeline {
                         options.getProject(),
                         headerMap))
                 .withSideInputs(headerMap))
-        .apply(
-            "Publish Events to PubSub",
-            PubsubIO.writeMessages()
-                .withMaxBatchBytesSize(PUB_SUB_BATCH_SIZE_BYTES)
-                .withMaxBatchSize(PUB_SUB_BATCH_SIZE)
-                .to(options.getTopic()));
+//        .apply(
+//            "Publish Events to PubSub",
+//            PubsubIO.writeMessages()
+//                .withMaxBatchBytesSize(PUB_SUB_BATCH_SIZE_BYTES)
+//                .withMaxBatchSize(PUB_SUB_BATCH_SIZE)
+//                .to(options.getTopic()));
+    .apply("write decrypted data to GCS", TextIO.write().to(options.getGcsBucket()));
 
     p.run();
   }
@@ -157,7 +159,7 @@ public class BQReidentificationPipeline {
   @SuppressWarnings("serial")
   /* DLP ReIdentification Process Transform */
 
-  static class DLPReIdentificationDoFn extends DoFn<KV<String, Iterable<Row>>, PubsubMessage> {
+  static class DLPReIdentificationDoFn extends DoFn<KV<String, Iterable<Row>>, String> {
 
     private DlpServiceClient dlpServiceClient;
     private String deidTemplate;
@@ -260,9 +262,9 @@ public class BQReidentificationPipeline {
             String jsonMessage = gson.toJson(convertMap);
             LOG.debug("Json message {}", jsonMessage);
             LOG.info("pubsub message 2---------->>>>>>>>>>"+jsonMessage);
-            PubsubMessage message = new PubsubMessage(jsonMessage.toString().getBytes(), null);
-            LOG.info("pubsub message 2---------->>>>>>>>>>"+message);
-            c.output(message);
+//            PubsubMessage message = new PubsubMessage(jsonMessage.toString().getBytes(), null);
+//            LOG.info("pubsub message 2---------->>>>>>>>>>"+message);
+            c.output(jsonMessage);
           });
     }
   }

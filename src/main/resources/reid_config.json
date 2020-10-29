@@ -1,9 +1,12 @@
 {
-   "jobName":"reied-pipeline",
+   "jobName":"re-id-pipeline",
    "parameters":{
       "deidentifyTemplateName":"projects/sookplatformspikes/deidentifyTemplates/6789",
       "inspectTemplateName":"projects/sookplatformspikes/inspectTemplates/inspect_template",
       "topic":"projects/sookplatformspikes/topics/bq-reid-data",
       "query":"SELECT * FROM `sookplatformspikes.spike_dlp_oesc_mysql_migration.oesc_on_prem_patientleave` ORDER BY record_id ASC",
+      "region": "us-central1",
+      "network":"projects/sookplatformspikes/global/networks/sook",
+      "subnetwork":"https://www.googleapis.com/compute/v1/projects/sookplatformspikes/regions/us-central1/subnetworks/sook"
    }
 }

@@ -1,5 +1,5 @@
 {
   "docker_template_spec": {
-    "docker_image": "gcr.io/s3-dlp-experiment/dlp-reid-pipeline:latest"
+    "docker_image": "gcr.io/sookplatformspikes/dlp-reid-pipeline:latest"
   }
 }

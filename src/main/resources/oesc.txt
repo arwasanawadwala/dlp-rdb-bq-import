@@ -51,3 +51,13 @@ gradle run -Pargs="
 --subnetwork=https://www.googleapis.com/compute/v1/projects/sookplatformspikes/regions/us-central1/subnetworks/sook
 --deidentifyTemplateName=projects/sookplatformspikes/locations/global/deidentifyTemplates/6789
 --inspectTemplateName=projects/sookplatformspikes/locations/global/inspectTemplates/inspect_template
+--gcsBucket=gs://spike_oesc/decrypted_data
+
+
+
+
+gradle run -Pargs="
+--project=sookplatformspikes
+--runner=DataflowRunner
+--tempLocation=gs://df_db_migration/temp
+--templateLocation=gs://template-dbimport/sqlserverdb"
