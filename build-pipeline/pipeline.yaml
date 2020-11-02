@@ -7,8 +7,8 @@ steps:
     dir: 'dlp-rdb-bq-import'
     id: 'build-jar'
   - name: gcr.io/cloud-builders/gsutil
-    args: ['cp', '*bundled*.jar', 'gs://spike_oesc/build/dataflow_deployment_$BUILD_ID.jar']
-    dir: 'dlp-rdb-bq-import/target'
+    args: ['cp', '*.jar', 'gs://spike_oesc/build/dataflow_deployment_$BUILD_ID.jar']
+    dir: 'dlp-rdb-bq-import/build/libs'
     id: 'deploy-jar'
 #  - name: gradle:5.6.2-jdk8
 #    entrypoint: gradle
