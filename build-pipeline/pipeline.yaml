@@ -2,7 +2,7 @@ steps:
   - name: gcr.io/cloud-builders/git
     args: ['clone', 'https://github.com/akhil-ghatiki/dlp-rdb-bq-import.git']
     id: 'check-out-source-code'
-  - name: gcr.io/cloud-builders/gradle:5.6.2-jdk8
+  - name: gcr.io/cloud-builders/java/gradle:5.6.2-jdk8
     args: ['assemble']
     dir: 'dlp-rdb-bq-import'
     id: 'build-jar'
@@ -10,3 +10,6 @@ steps:
     args: ['cp', '*bundled*.jar', 'gs://spike_oesc/build/dataflow_deployment_$BUILD_ID.jar']
     dir: 'dlp-rdb-bq-import/target'
     id: 'deploy-jar'
+#  - name: gradle:5.6.2-jdk8
+#    entrypoint: gradle
+#    args: ["assemble"]
