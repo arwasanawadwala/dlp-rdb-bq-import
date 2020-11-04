@@ -1,5 +1,5 @@
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-traditional
+running in command line
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 ./gradlew run -Pargs="
 --project=sookplatformspikes
@@ -10,21 +10,6 @@ traditional
 --offsetCount=500
 --DLPConfigBucket=spike_oesc
 --DLPConfigObject=spike_dpl_template_oesc.json"
-
-
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-without encryption
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-./gradlew run -Pargs="
---project=sookplatformspikes
---runner=DirectRunner
---dataSet=spike_dlp_oesc_mysql_migration
---JDBCSpec=jdbc:mysql://(host=localhost,port=3306,user=root,password=password)/oesc_on_prem
---tempLocation=gs://spike_oesc/spike_dpl_template_oesc.json
---offsetCount=500
---DLPConfigBucket=spike_oesc
---DLPConfigObject=spike_dpl_template_oesc.json"
-
 
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -41,6 +26,8 @@ intellij params
 
 
 #############################################################################################################################################
+re-identification pipeline
+##################################################
 
 gradle run -Pargs="
 --project=sookplatformspikes
@@ -54,10 +41,15 @@ gradle run -Pargs="
 --gcsBucket=gs://spike_oesc/decrypted_data
 
 
-
-
-gradle run -Pargs="
---project=sookplatformspikes
---runner=DataflowRunner
---tempLocation=gs://df_db_migration/temp
---templateLocation=gs://template-dbimport/sqlserverdb"
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+file import to Big Qeury
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+./gradlew run -Pargs="
+--project=sookplatformspikes_file_import
+--runner=DirectRunner
+--dataSet=spike_dlp_oesc_mysql_migration
+--inputFilePath=/Users/akhilghatiki/oesc/spikes/dlp-rdb-bq-import/src/main/resources/oesc_on_prem_patient.tsv
+--fileDeLimiter=\t
+--tempLocation=gs://spike_oesc/dlp-file-import
+--DLPConfigBucket=spike_oesc
+--DLPConfigObject=spike_dpl_template_oesc.json"
