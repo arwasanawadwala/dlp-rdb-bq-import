@@ -4,9 +4,27 @@ steps:
     id: 'check-out-source-code'
   - name: gcr.io/cloud-builders/gradle:5.6.2-jdk-8
     args: ['assemble']
-    dir: 'dlp-rdb-bq-import'
+    dir: '$REPO_NAME'
     id: 'build-jar'
   - name: gcr.io/cloud-builders/gsutil
     args: ['cp', '*.jar', 'gs://spike_oesc/build/dlp-rdb-bq-import_$BUILD_ID.jar']
-    dir: 'dlp-rdb-bq-import/build/libs'
+    dir: '$REPO_NAME/build/libs'
     id: 'deploy-jar'
+  - name: gcr.io/cloud-builders/gsutil
+    args: ['cp', 'gs://spike_oesc/build/dlp-rdb-bq-import_$BUILD_ID.jar', 'gs://${_DATAFLOW_JAR_BUCKET}/composer-builds/dlp-rdb-bq-import-dataflow_$BUILD_ID.jar']
+    id: 'copy-jar'
+  - name: gcr.io/cloud-builders/gcloud
+    args: ['composer', 'environments', 'run', '${_COMPOSER_ENV_NAME}', '--location', '${_COMPOSER_REGION}','variables', '--', '--set', 'dataflow_jar_file', 'dlp-rdb-bq-import-dataflow_$BUILD_ID.jar']
+    id: 'set-composer-jar-ref'
+  - name: gcr.io/cloud-builders/gsutil
+    args: ['cp', 'db-import.py', 'gs://${_DATAFLOW_JAR_BUCKET}/composer-dags']
+    dir: '$REPO_NAME/src/workflow-dag'
+    id: 'deploy-processing-pipeline'
+  - name: gcr.io/cloud-builders/gcloud
+    entrypoint: 'bash'
+    args: ['wait_for_dag_deployed.sh', '${_COMPOSER_ENV_NAME}', '${_COMPOSER_REGION}', '${_COMPOSER_DAG_NAME}', '6', '20']
+    dir: '$REPO_NAME/build-pipeline'
+    id: 'wait-for-dag-deployed-on-composer'
+  - name: gcr.io/cloud-builders/gcloud
+    args: ['composer', 'environments', 'run', '${_COMPOSER_ENV_NAME}', '--location', '${_COMPOSER_REGION}', 'trigger_dag', '--', '${_COMPOSER_DAG_NAME}', '--run_id=$BUILD_ID']
+    id: 'trigger-pipeline-execution'
