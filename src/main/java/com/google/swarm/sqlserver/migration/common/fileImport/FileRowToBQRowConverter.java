@@ -8,10 +8,6 @@ import org.apache.beam.sdk.transforms.DoFn;
 @SuppressWarnings("serial")
 public class FileRowToBQRowConverter extends DoFn<String, TableRow> {
 
-  private String[] columnNames;
-
-  private boolean isFirstFlow = true;
-
   private String deLimiter = ",";
 
   public FileRowToBQRowConverter(String deLimiter) {
