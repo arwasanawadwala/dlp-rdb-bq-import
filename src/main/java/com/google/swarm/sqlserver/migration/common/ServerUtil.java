@@ -45,11 +45,11 @@ public class ServerUtil {
 
   public static final Logger LOG = LoggerFactory.getLogger(ServerUtil.class);
   private static final String QUERY_TABLES =
-      "SELECT TABLE_SCHEMA, TABLE_NAME, TABLE_TYPE FROM INFORMATION_SCHEMA.TABLES";
+      "SELECT TABLE_SCHEMA, TABLE_NAME, TABLE_TYPE FROM INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA = 'oesc_on_prem'";
   private static final String QUERY_COLUMNS =
-      "SELECT COLUMN_NAME, ORDINAL_POSITION, COLUMN_DEFAULT, IS_NULLABLE, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME=? ORDER BY ORDINAL_POSITION ASC";
+      "SELECT COLUMN_NAME, ORDINAL_POSITION, COLUMN_DEFAULT, IS_NULLABLE, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'oesc_on_prem' AND TABLE_NAME=? ORDER BY ORDINAL_POSITION ASC";
   private static final String QUERY_PRIMARY_KEY =
-      "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE WHERE TABLE_NAME = ? AND constraint_name LIKE 'PK%'";
+      "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA = 'oesc_on_prem' AND TABLE_NAME = ? AND constraint_name LIKE 'PRIMARY%'";
   private static final String COLUMN_NAME_REGEXP = "^[A-Za-z_]+[A-Za-z_0-9]*$";
   private static final Pattern COLUMN_NAME_REGEXP_PATTERN = Pattern.compile(COLUMN_NAME_REGEXP);
   public static final Map<SqlDataType, String> msSqlToBqTypeMap =
@@ -195,7 +195,7 @@ public class ServerUtil {
         column.setPrimaryKey(false);
       }
       column.setDefaultValue(rs.getString("COLUMN_DEFAULT"));
-      column.setNullable(rs.getBoolean("IS_NULLABLE"));
+      column.setNullable(rs.getString("IS_NULLABLE").equals("YES"));
       column.setDataType(rs.getString("DATA_TYPE"));
       columns.add(column);
     }

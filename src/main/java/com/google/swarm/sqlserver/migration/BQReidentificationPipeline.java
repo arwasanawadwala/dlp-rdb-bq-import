@@ -42,6 +42,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.PipelineResult;
+import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.TypedRead.Method;
 import org.apache.beam.sdk.io.gcp.pubsub.PubsubIO;
@@ -121,12 +122,13 @@ public class BQReidentificationPipeline {
                         options.getProject(),
                         headerMap))
                 .withSideInputs(headerMap))
-        .apply(
-            "Publish Events to PubSub",
-            PubsubIO.writeMessages()
-                .withMaxBatchBytesSize(PUB_SUB_BATCH_SIZE_BYTES)
-                .withMaxBatchSize(PUB_SUB_BATCH_SIZE)
-                .to(options.getTopic()));
+//        .apply(
+//            "Publish Events to PubSub",
+//            PubsubIO.writeMessages()
+//                .withMaxBatchBytesSize(PUB_SUB_BATCH_SIZE_BYTES)
+//                .withMaxBatchSize(PUB_SUB_BATCH_SIZE)
+//                .to(options.getTopic()));
+    .apply("write decrypted data to GCS", TextIO.write().to(options.getGcsBucket()));
 
     p.run();
   }
@@ -157,7 +159,7 @@ public class BQReidentificationPipeline {
   @SuppressWarnings("serial")
   /* DLP ReIdentification Process Transform */
 
-  static class DLPReIdentificationDoFn extends DoFn<KV<String, Iterable<Row>>, PubsubMessage> {
+  static class DLPReIdentificationDoFn extends DoFn<KV<String, Iterable<Row>>, String> {
 
     private DlpServiceClient dlpServiceClient;
     private String deidTemplate;
@@ -190,12 +192,12 @@ public class BQReidentificationPipeline {
         this.inspectTemplateExist = true;
       }
       if (this.deidTemplate != null) {
-
+        LOG.info("de-identify template---------->>>>>>>>>>" + deidTemplate);
         this.requestBuilder =
             ReidentifyContentRequest.newBuilder()
                 .setParent(ProjectName.of(projectId).toString())
                 .setReidentifyTemplateName(deidTemplate);
-
+        LOG.info("inspect template---------->>>>>>>>>>" + inspectTemplate);
         if (this.inspectTemplateExist) {
           this.requestBuilder.setInspectTemplateName(this.inspectTemplate);
         }
@@ -232,10 +234,15 @@ public class BQReidentificationPipeline {
       Table dlpTable =
           dlpTableBuilder.addAllHeaders(dlpTableHeaders).addAllRows(rows.getValue()).build();
       ContentItem tableItem = ContentItem.newBuilder().setTable(dlpTable).build();
+      LOG.info("table item ---------->>>>>>>>>>"+tableItem);
+      LOG.info("request builder ---------->>>>>>>>>>"+requestBuilder);
+      LOG.info("inspection template name ---------->>>>>>>>>>"+requestBuilder.getInspectTemplateName());
+      LOG.info("reIdentify template name ---------->>>>>>>>>>"+requestBuilder.getReidentifyTemplateName());
       requestBuilder.setItem(tableItem);
       LOG.info("Item Size {}", tableItem.getSerializedSize());
       ReidentifyContentResponse response =
           dlpServiceClient.reidentifyContent(requestBuilder.build());
+      LOG.info("response ---------->>>>>>>>>>"+response.toString());
 
       List<Table.Row> outputRows = response.getItem().getTable().getRowsList();
 
@@ -254,8 +261,10 @@ public class BQReidentificationPipeline {
                     });
             String jsonMessage = gson.toJson(convertMap);
             LOG.debug("Json message {}", jsonMessage);
-            PubsubMessage message = new PubsubMessage(jsonMessage.toString().getBytes(), null);
-            c.output(message);
+            LOG.info("pubsub message 2---------->>>>>>>>>>"+jsonMessage);
+//            PubsubMessage message = new PubsubMessage(jsonMessage.toString().getBytes(), null);
+//            LOG.info("pubsub message 2---------->>>>>>>>>>"+message);
+            c.output(jsonMessage);
           });
     }
   }
