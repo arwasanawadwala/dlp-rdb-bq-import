@@ -1,0 +1,15 @@
+steps:
+  - name: gcr.io/cloud-builders/git
+    args: ['clone', 'https://github.com/arwasanawadwala/dlp-rdb-bq-import.git']
+    id: 'check-out-source-code'
+  - name: gcr.io/cloud-builders/git
+    args: ['checkout', 'cicd']
+    id: 'check-out-branch'
+  - name: gcr.io/cloud-builders/gradle:5.6.2-jdk-8
+    args: ['assemble']
+    dir: 'dlp-rdb-bq-import'
+    id: 'build-jar'
+  - name: gcr.io/cloud-builders/gsutil
+    args: ['cp', '*.jar', 'gs://spike_oesc/build/dlp-rdb-bq-import_$BUILD_ID.jar']
+    dir: 'dlp-rdb-bq-import/build/libs'
+    id: 'deploy-jar'
