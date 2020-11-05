@@ -32,14 +32,16 @@ public class FileImportPipeline {
 
     Pipeline importPipeline = Pipeline.create(options);
 
-
     importPipeline.apply("Read Lines", TextIO.read().from(options.getInputFilePath()))
-        .apply("trnadform to Big query row", ParDo.of(new FileRowToBQRowConverter(options.getFileDeLimiter().toString())))
+        .apply("trnadform to Big query row",
+            ParDo.of(new FileRowToBQRowConverter(options.getFileDeLimiter().toString())))
         .apply("write to big query", BigQueryIO.<TableRow>writeTableRows()
             .to("sookplatformspikes:spike_dlp_oesc_mysql_migration.oesc_on_prem_patient")
             .withWriteDisposition(WriteDisposition.WRITE_APPEND)
             .withCreateDisposition(CreateDisposition.CREATE_NEVER)
-            .withSchema(FileTableSchema.getTableSchema(new TableSchemaConfigUtil().getParsedMap().getFileTableSchemaMap().getPatientTableMap())));
+            .withSchema(FileTableSchema.getTableSchema(
+                new TableSchemaConfigUtil().getParsedMap().getFileTableSchemaMap()
+                    .getPatientTableMap())));
 
     importPipeline.run().waitUntilFinish();
 
