@@ -3,7 +3,7 @@ package com.google.swarm.sqlserver.migration.common.fileImport.config;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Map;
 
-public class FileTableSchemaMap {
+public class FileTableSchemaMapConfig {
 
   @JsonProperty("patient")
   private Map<String, String> patientTableMap;

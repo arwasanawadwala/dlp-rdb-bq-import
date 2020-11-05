@@ -5,14 +5,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class TableSchemaConfig {
 
   @JsonProperty("tableSchema")
-  private FileTableSchemaMap fileTableSchemaMap;
+  private FileTableSchemaMapConfig fileTableSchemaMap;
 
-  public FileTableSchemaMap getFileTableSchemaMap() {
+  public FileTableSchemaMapConfig getFileTableSchemaMap() {
     return fileTableSchemaMap;
   }
 
   public void setFileTableSchemaMap(
-      FileTableSchemaMap fileTableSchemaMap) {
+      FileTableSchemaMapConfig fileTableSchemaMap) {
     this.fileTableSchemaMap = fileTableSchemaMap;
   }
 }
