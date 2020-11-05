@@ -11,15 +11,15 @@ public class TableSchemaConfigUtil {
 
   public TableSchemaConfig getParsedMap() {
     objectMapper.findAndRegisterModules();
-    TableSchemaConfig ymlMap = null;
+    TableSchemaConfig tableSchemaConfig = null;
     try {
-      ymlMap = objectMapper.readValue(new File(
+      tableSchemaConfig = objectMapper.readValue(new File(
               "/Users/akhilghatiki/oesc/spikes/dlp-rdb-bq-import/src/main/resources/tableSchema.yml"),
           TableSchemaConfig.class);
     } catch (IOException e) {
       e.printStackTrace();
     }
-    return ymlMap;
+    return tableSchemaConfig;
   }
 
 }

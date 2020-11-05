@@ -39,7 +39,7 @@ public class FileImportPipeline {
             .to("sookplatformspikes:spike_dlp_oesc_mysql_migration.oesc_on_prem_patient")
             .withWriteDisposition(WriteDisposition.WRITE_APPEND)
             .withCreateDisposition(CreateDisposition.CREATE_NEVER)
-            .withSchema(FileTableSchema.getTableSchema(new TableSchemaConfigUtil().getParsedMap().getPatient())));
+            .withSchema(FileTableSchema.getTableSchema(new TableSchemaConfigUtil().getParsedMap().getFileTableSchemaMap().getPatientTableMap())));
 
     importPipeline.run().waitUntilFinish();
 

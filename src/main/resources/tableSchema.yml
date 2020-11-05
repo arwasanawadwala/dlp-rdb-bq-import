@@ -1,12 +1,13 @@
-patientleave:
-  record_id: INTEGER
-  patient_id: INTEGER
-  date_time: STRING
-  in_out: STRING
-  reason: STRING
-  sign_by: STRING
+tableSchema:
+  patientleave:
+    record_id: INTEGER
+    patient_id: INTEGER
+    date_time: STRING
+    in_out: STRING
+    reason: STRING
+    sign_by: STRING
 
-patient:
-  name: STRING
-  age: INTEGER
-  patient_id: INTEGER
+  patient:
+    name: STRING
+    age: INTEGER
+    patient_id: INTEGER

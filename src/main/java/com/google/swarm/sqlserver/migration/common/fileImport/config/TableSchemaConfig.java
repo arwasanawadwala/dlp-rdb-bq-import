@@ -1,22 +1,18 @@
 package com.google.swarm.sqlserver.migration.common.fileImport.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.Map;
 
 public class TableSchemaConfig {
 
-  @JsonProperty("patient")
-  private Map<String, String> patient;
+  @JsonProperty("tableSchema")
+  private FileTableSchemaMap fileTableSchemaMap;
 
-  @JsonProperty("patientleave")
-  private Map<String, String> patientleave;
-
-  public Map<String, String> getPatient() {
-    return patient;
+  public FileTableSchemaMap getFileTableSchemaMap() {
+    return fileTableSchemaMap;
   }
 
-  public Map<String, String> getPatientleave() {
-    return patientleave;
+  public void setFileTableSchemaMap(
+      FileTableSchemaMap fileTableSchemaMap) {
+    this.fileTableSchemaMap = fileTableSchemaMap;
   }
-
 }
