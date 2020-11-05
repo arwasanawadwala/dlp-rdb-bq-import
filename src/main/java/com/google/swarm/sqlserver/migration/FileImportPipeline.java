@@ -19,7 +19,7 @@ public class FileImportPipeline {
 
   public static final Logger LOG = LoggerFactory.getLogger(FileImportPipeline.class);
 
-  public static void main(String[] args) {
+  public static void runFileImportPipeline(String[] args) {
 
     FileImportPipelineOptions fileImportPipelineOptions = PipelineOptionsFactory.fromArgs(args)
         .withValidation().as(FileImportPipelineOptions.class);
@@ -27,6 +27,20 @@ public class FileImportPipeline {
     runFileImport(fileImportPipelineOptions);
 
   }
+
+//  public static FileImportPipelineOptions generateOptions() {
+//    FileImportPipelineOptions fileImportPipelineOptions = PipelineOptionsFactory
+//        .as(FileImportPipelineOptions.class);
+//
+//    PipelineRunnerConfigUtil pipelineRunnerConfigUtil = new PipelineRunnerConfigUtil();
+//
+//    Map<String, String> fileImportOptionsMap = pipelineRunnerConfigUtil.getPipelineConfigMap()
+//        .getFileImportPipelineConfig().getOptions().getPipelineOptionsMap();
+//
+//    fileImportPipelineOptions
+//        .setProject(fileImportOptionsMap.get(PROJECT));
+//    fileImportPipelineOptions.setDataSet(DATA_SET);
+//  }
 
   public static void runFileImport(FileImportPipelineOptions options) {
 
