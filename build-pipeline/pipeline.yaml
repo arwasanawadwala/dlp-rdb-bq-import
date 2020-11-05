@@ -2,9 +2,6 @@ steps:
   - name: gcr.io/cloud-builders/git
     args: ['clone', 'https://github.com/arwasanawadwala/dlp-rdb-bq-import.git']
     id: 'check-out-source-code'
-  - name: gcr.io/cloud-builders/git
-    args: ['checkout', 'cicd']
-    id: 'check-out-branch'
   - name: gcr.io/cloud-builders/gradle:5.6.2-jdk-8
     args: ['assemble']
     dir: 'dlp-rdb-bq-import'
