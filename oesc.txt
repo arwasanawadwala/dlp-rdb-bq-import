@@ -1,0 +1,55 @@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+running in command line
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+./gradlew run -Pargs="
+--project=sookplatformspikes
+--runner=DirectRunner
+--dataSet=spike_dlp_oesc_mysql_migration
+--JDBCSpec=jdbc:mysql://(host=localhost,port=3306,user=root,password=password)/oesc_on_prem?encrypt=true&trustServerCertificate=true
+--tempLocation=gs://spike_oesc/spike_dpl_template_oesc.json
+--offsetCount=500
+--DLPConfigBucket=spike_oesc
+--DLPConfigObject=spike_dpl_template_oesc.json"
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+intellij params
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+sookplatformspikes
+DirectRunner
+spike_dlp_oesc_mysql_migration
+jdbc:mysql://(host=localhost,port=3306,user=root,password=password)/oesc_on_prem?encrypt=true&trustServerCertificate=true
+gs://spike_oesc/spike_dpl_template_oesc.json
+500
+spike_oesc
+spike_dpl_template_oesc.json
+
+
+#############################################################################################################################################
+re-identification pipeline
+##################################################
+
+gradle run -Pargs="
+--project=sookplatformspikes
+--runner=DataflowRunner
+--dataSet=spike_dlp_oesc_mysql_migration
+--tempLocation=gs://spike_oesc/dlp-re-id/
+--topic=projects/sookplatformspikes/topics/bq-reid-data
+--subnetwork=https://www.googleapis.com/compute/v1/projects/sookplatformspikes/regions/us-central1/subnetworks/sook
+--deidentifyTemplateName=projects/sookplatformspikes/locations/global/deidentifyTemplates/6789
+--inspectTemplateName=projects/sookplatformspikes/locations/global/inspectTemplates/inspect_template
+--gcsBucket=gs://spike_oesc/decrypted_data
+
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+file import to Big Qeury
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+./gradlew run -Pargs="
+--project=sookplatformspikes_file_import
+--runner=DirectRunner
+--dataSet=spike_dlp_oesc_mysql_migration
+--inputFilePath=/Users/akhilghatiki/oesc/spikes/dlp-rdb-bq-import/src/main/resources/oesc_on_prem_patient.tsv
+--fileDeLimiter=\t
+--tempLocation=gs://spike_oesc/dlp-file-import
+--DLPConfigBucket=spike_oesc
+--DLPConfigObject=spike_dpl_template_oesc.json"

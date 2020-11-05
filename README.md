@@ -144,7 +144,7 @@ gradle build
 Run Using Direct Runner. Please replace arguments as required.
 
 ```
-gradle run -Pargs=" --project=sqlserver-gke-dataflow --runner=DirectRunner --dataSet=sql_servers_db_migration_test --JDBCSpec=jdbc:sqlserver://130.211.216.221:1433;DatabaseName=customer_db;user=sa;password=XXXX;encrypt=true;trustServerCertificate=true --tempLocation=gs://df_db_migration/temp --offsetCount=500 --DLPConfigBucket=dlp_config --DLPConfigObject=db1/dlpconfigs.json"
+gradle run -Pargs=" --project=sqlserver-gke-dataflow --runner=DirectRunner --dataSet=sql_servers_db_migration --JDBCSpec=jdbc:sqlserver://130.211.216.221:1433;DatabaseName=customer_db;user=sa;password=XXXX;encrypt=true;trustServerCertificate=true --tempLocation=gs://df_db_migration/temp --offsetCount=500 --DLPConfigBucket=dlp_config --DLPConfigObject=db1/dlpconfigs.json"
 ```
 
 ### Run Pipeline in DataFlow 
