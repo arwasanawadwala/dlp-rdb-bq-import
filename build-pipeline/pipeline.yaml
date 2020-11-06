@@ -8,7 +8,7 @@ steps:
     id: 'build-jar'
   - name: gcr.io/cloud-builders/gcloud
     entrypoint: 'bash'
-    args: [ 'source set_env.sh' ]
+    args: [ './set_env.sh' ]
     dir: '$REPO_NAME/env-setup'
     id: 'setup-environment'
   - name: gcr.io/cloud-builders/gsutil
