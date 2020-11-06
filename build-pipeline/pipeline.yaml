@@ -6,16 +6,21 @@ steps:
     args: ['assemble']
     dir: '$REPO_NAME'
     id: 'build-jar'
+  - name: gcr.io/cloud-builders/gcloud
+    entrypoint: 'bash'
+    args: ['set_env.sh']
+    dir: '$REPO_NAME/env-setup'
+    id: 'setup-environment'
+#  - name: gcr.io/cloud-builders/gsutil
+#    args: ['cp', '*.jar', 'gs://spike_oesc/build/dlp-rdb-bq-import.jar']
+#    dir: '$REPO_NAME/build/libs'
+#    id: 'deploy-jar'
   - name: gcr.io/cloud-builders/gsutil
-    args: ['cp', '*.jar', 'gs://spike_oesc/build/dlp-rdb-bq-import_$BUILD_ID.jar']
-    dir: '$REPO_NAME/build/libs'
-    id: 'deploy-jar'
-  - name: gcr.io/cloud-builders/gsutil
-    args: ['cp', '*.jar', 'gs://${_DATAFLOW_JAR_BUCKET}/composer-builds/dlp-rdb-bq-import-dataflow_$BUILD_ID.jar']
+    args: ['cp', '*.jar', 'gs://${_DATAFLOW_JAR_BUCKET}/composer-builds/dlp-rdb-bq-import-dataflow.jar']
     dir: '$REPO_NAME/build/libs'
     id: 'copy-jar'
   - name: gcr.io/cloud-builders/gcloud
-    args: ['composer', 'environments', 'run', '${_COMPOSER_ENV_NAME}', '--location', '${_COMPOSER_REGION}','variables', '--', '--set', 'dataflow_jar_file', 'dlp-rdb-bq-import-dataflow_$BUILD_ID.jar']
+    args: ['composer', 'environments', 'run', '${_COMPOSER_ENV_NAME}', '--location', '${_COMPOSER_REGION}','variables', '--', '--set', 'dataflow_jar_file', 'dlp-rdb-bq-import-dataflow.jar']
     id: 'set-composer-jar-ref'
   - name: gcr.io/cloud-builders/gsutil
     args: ['cp', 'db-import.py', 'gs://${_DATAFLOW_JAR_BUCKET}/composer-dags']
