@@ -8,27 +8,27 @@ import org.apache.beam.sdk.options.ValueProvider;
 public interface FileImportPipelineOptions extends PipelineOptions, DataflowPipelineOptions {
 
   @Description("BQ Dataset")
-  ValueProvider<String> getDataSet();
+  String getDataSet();
 
-  void setDataSet(ValueProvider<String> value);
+  void setDataSet(String value);
 
   @Description("DLP Bucket Config")
-  ValueProvider<String> getDLPConfigBucket();
+  String getDLPConfigBucket();
 
-  void setDLPConfigBucket(ValueProvider<String> value);
+  void setDLPConfigBucket(String value);
 
   @Description("DLP Object Config")
-  ValueProvider<String> getDLPConfigObject();
+  String getDLPConfigObject();
 
-  void setDLPConfigObject(ValueProvider<String> value);
+  void setDLPConfigObject(String value);
 
   @Description("Input file path")
-  ValueProvider<String> getInputFilePath();
+  String getInputFilePath();
 
-  void setInputFilePath(ValueProvider<String> value);
+  void setInputFilePath(String value);
 
   @Description("file delimiter")
-  ValueProvider<String> getFileDeLimiter();
+  String getFileDeLimiter();
 
-  void setFileDeLimiter(ValueProvider<String> value);
+  void setFileDeLimiter(String value);
 }
