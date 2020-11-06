@@ -6,11 +6,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PipelineConfig {
 
-  @JsonProperty("fileImport")
-  private FileImportPipelineConfig fileImportPipelineConfig;
+  @JsonProperty("pipeline")
+  private DataImportPipelineConfig dataImportPipelineConfig;
 
-  public FileImportPipelineConfig getFileImportPipelineConfig() {
-    return fileImportPipelineConfig;
+  public DataImportPipelineConfig getDataImportPipelineConfig() {
+    return dataImportPipelineConfig;
   }
 
 }

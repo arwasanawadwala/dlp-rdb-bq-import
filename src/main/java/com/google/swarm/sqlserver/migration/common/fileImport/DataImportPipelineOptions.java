@@ -5,12 +5,27 @@ import org.apache.beam.sdk.options.Description;
 import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.ValueProvider;
 
-public interface FileImportPipelineOptions extends PipelineOptions, DataflowPipelineOptions {
+public interface DataImportPipelineOptions extends PipelineOptions, DataflowPipelineOptions {
 
   @Description("BQ Dataset")
   String getDataSet();
 
   void setDataSet(String value);
+
+  @Description("JDBC Spec")
+  String getJDBCSpec();
+
+  void setJDBCSpec(String value);
+
+  @Description("Table Offset Count")
+  Integer getOffsetCount();
+
+  void setOffsetCount(Integer value);
+
+  @Description("Exclude Tables")
+  String getExcludedTables();
+
+  void setExcludedTables(String value);
 
   @Description("DLP Bucket Config")
   String getDLPConfigBucket();

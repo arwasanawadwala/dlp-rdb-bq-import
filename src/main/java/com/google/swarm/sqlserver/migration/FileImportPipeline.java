@@ -9,11 +9,10 @@ import static com.google.swarm.sqlserver.migration.common.pipelineConfiguration.
 import static com.google.swarm.sqlserver.migration.common.pipelineConfiguration.Constants.TEMP_LOCATION;
 
 import com.google.api.services.bigquery.model.TableRow;
-import com.google.swarm.sqlserver.migration.common.fileImport.FileImportPipelineOptions;
+import com.google.swarm.sqlserver.migration.common.fileImport.DataImportPipelineOptions;
 import com.google.swarm.sqlserver.migration.common.fileImport.FileRowToBQRowConverter;
 import com.google.swarm.sqlserver.migration.common.fileImport.FileTableSchema;
 import com.google.swarm.sqlserver.migration.common.fileImport.config.TableSchemaConfigUtil;
-import com.google.swarm.sqlserver.migration.common.pipelineConfiguration.PipelineRunnerConfigUtil;
 import java.util.Map;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.io.TextIO;
@@ -29,36 +28,32 @@ public class FileImportPipeline {
 
   public static final Logger LOG = LoggerFactory.getLogger(FileImportPipeline.class);
 
-  public void runFileImportPipeline(String[] args) {
+  public void runFileImportPipeline(String[] args, Map<String, String> dataImportPipelineConfig) {
 
-    FileImportPipelineOptions fileImportPipelineOptions = PipelineOptionsFactory.fromArgs(args)
-        .withValidation().as(FileImportPipelineOptions.class);
-    System.out.println("------->>>" + INPUT_FILE_PATH);
-    runFileImport(enrichOptions(fileImportPipelineOptions));
+    DataImportPipelineOptions dataImportPipelineOptions = PipelineOptionsFactory.fromArgs(args)
+        .withValidation().as(DataImportPipelineOptions.class);
+
+    runFileImport(enrichOptions(dataImportPipelineOptions, dataImportPipelineConfig));
 
   }
 
-  private FileImportPipelineOptions enrichOptions(
-      FileImportPipelineOptions fileImportPipelineOptions) {
+  private DataImportPipelineOptions enrichOptions(
+      DataImportPipelineOptions dataImportPipelineOptions,
+      Map<String, String> dataImportPipelineConfig) {
 
-    PipelineRunnerConfigUtil pipelineRunnerConfigUtil = new PipelineRunnerConfigUtil();
+    dataImportPipelineOptions
+        .setProject(dataImportPipelineConfig.get(PROJECT));
+    dataImportPipelineOptions.setDataSet(dataImportPipelineConfig.get(DATA_SET));
+    dataImportPipelineOptions.setInputFilePath(dataImportPipelineConfig.get(INPUT_FILE_PATH));
+    dataImportPipelineOptions.setFileDeLimiter(dataImportPipelineConfig.get(FILE_DE_LIMITER));
+    dataImportPipelineOptions.setTempLocation(dataImportPipelineConfig.get(TEMP_LOCATION));
+    dataImportPipelineOptions.setDLPConfigBucket(dataImportPipelineConfig.get(DLP_CONFIG_BUCKET));
+    dataImportPipelineOptions.setDLPConfigObject(dataImportPipelineConfig.get(DLP_CONFIG_OBJECT));
 
-    Map<String, String> fileImportOptionsMap = pipelineRunnerConfigUtil.getPipelineConfigMap()
-        .getPipelineConfig().getFileImportPipelineConfig().getOptions();
-
-    fileImportPipelineOptions
-        .setProject(fileImportOptionsMap.get(PROJECT));
-    fileImportPipelineOptions.setDataSet(fileImportOptionsMap.get(DATA_SET));
-    fileImportPipelineOptions.setInputFilePath(fileImportOptionsMap.get(INPUT_FILE_PATH));
-    fileImportPipelineOptions.setFileDeLimiter(fileImportOptionsMap.get(FILE_DE_LIMITER));
-    fileImportPipelineOptions.setTempLocation(fileImportOptionsMap.get(TEMP_LOCATION));
-    fileImportPipelineOptions.setDLPConfigBucket(fileImportOptionsMap.get(DLP_CONFIG_BUCKET));
-    fileImportPipelineOptions.setDLPConfigObject(fileImportOptionsMap.get(DLP_CONFIG_OBJECT));
-
-    return fileImportPipelineOptions;
+    return dataImportPipelineOptions;
   }
 
-  public void runFileImport(FileImportPipelineOptions options) {
+  public void runFileImport(DataImportPipelineOptions options) {
 
     Pipeline importPipeline = Pipeline.create(options);
 
