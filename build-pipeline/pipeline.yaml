@@ -12,10 +12,6 @@ steps:
     id: 'setup-environment'
   - name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: 'bash'
-    args: ['echo DATAFLOW_JAR_BUCKET = $DATAFLOW_JAR_BUCKET']
-    id : 'test'
-  - name: 'gcr.io/cloud-builders/gcloud'
-    entrypoint: 'bash'
     args: ['echo _DATAFLOW_JAR_BUCKET = ${_DATAFLOW_JAR_BUCKET}']
     id : 'test2'
   - name: gcr.io/cloud-builders/gsutil
