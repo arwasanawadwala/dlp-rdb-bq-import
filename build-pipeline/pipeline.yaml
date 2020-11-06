@@ -10,10 +10,14 @@ steps:
     entrypoint: 'bash'
     args: ['env-setup/set_env.sh']
     id: 'setup-environment'
-#  - name: gcr.io/cloud-builders/gcloud
-#    entrypoint: 'bash'
-#    args: [ './set_env.sh' ]
-#    dir: '$REPO_NAME/env-setup'
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args: ['echo DATAFLOW_JAR_BUCKET = ${DATAFLOW_JAR_BUCKET}']
+    id : 'test'
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args: ['echo _DATAFLOW_JAR_BUCKET = ${_DATAFLOW_JAR_BUCKET}']
+    id : 'test2'
   - name: gcr.io/cloud-builders/gsutil
     args: [ 'cp', '*.jar', 'gs://${_DATAFLOW_JAR_BUCKET}/composer-builds/dlp-rdb-bq-import-dataflow.jar' ]
     dir: '$REPO_NAME/build/libs'
