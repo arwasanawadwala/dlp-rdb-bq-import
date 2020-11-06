@@ -6,8 +6,9 @@ steps:
     args: [ 'assemble' ]
     dir: '$REPO_NAME'
     id: 'build-jar'
-  - name: 'bash'
-    args: [ 'set_env.sh' ]
+  - name: gcr.io/cloud-builders/gcloud
+    entrypoint: 'bash'
+    args: [ 'source set_env.sh' ]
     dir: '$REPO_NAME/env-setup'
     id: 'setup-environment'
   - name: gcr.io/cloud-builders/gsutil
