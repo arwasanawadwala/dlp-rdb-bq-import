@@ -14,18 +14,26 @@
 */
 package com.google.swarm.sqlserver.migration;
 
+import static com.google.swarm.sqlserver.migration.common.pipelineConfiguration.Constants.DATA_SET;
+import static com.google.swarm.sqlserver.migration.common.pipelineConfiguration.Constants.DLP_CONFIG_BUCKET;
+import static com.google.swarm.sqlserver.migration.common.pipelineConfiguration.Constants.DLP_CONFIG_OBJECT;
+import static com.google.swarm.sqlserver.migration.common.pipelineConfiguration.Constants.JDBC_SPEC;
+import static com.google.swarm.sqlserver.migration.common.pipelineConfiguration.Constants.OFFSET_COUNT;
+import static com.google.swarm.sqlserver.migration.common.pipelineConfiguration.Constants.PROJECT;
+import static com.google.swarm.sqlserver.migration.common.pipelineConfiguration.Constants.TEMP_LOCATION;
+
 import com.google.api.services.bigquery.model.TableRow;
 import com.google.common.collect.ImmutableList;
 import com.google.swarm.sqlserver.migration.common.BigQueryTableDestination;
 import com.google.swarm.sqlserver.migration.common.BigQueryTableRowDoFn;
 import com.google.swarm.sqlserver.migration.common.CreateTableMapDoFn;
-import com.google.swarm.sqlserver.migration.common.DBImportPipelineOptions;
 import com.google.swarm.sqlserver.migration.common.DLPTokenizationDoFn;
 import com.google.swarm.sqlserver.migration.common.DeterministicKeyCoder;
 import com.google.swarm.sqlserver.migration.common.SqlTable;
 import com.google.swarm.sqlserver.migration.common.TableToDbRowFn;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
+import com.google.swarm.sqlserver.migration.common.fileImport.DataImportPipelineOptions;
+import com.google.swarm.sqlserver.migration.utils.CustomValueProvider;
+import java.util.Map;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.coders.CoderProviders;
 import org.apache.beam.sdk.extensions.gcp.options.GcpOptions;
@@ -52,18 +60,35 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DBImportPipeline {
+
   public static final Logger LOG = LoggerFactory.getLogger(DBImportPipeline.class);
 
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
+  public void runDBImportPipeline(String[] args, Map<String, String> dataImportPipeLineConfig) {
+    DataImportPipelineOptions dbImportPipelineOptions =
+        PipelineOptionsFactory.fromArgs(args).withValidation().as(DataImportPipelineOptions.class);
 
-    DBImportPipelineOptions options =
-        PipelineOptionsFactory.fromArgs(args).withValidation().as(DBImportPipelineOptions.class);
+    runDBImport(enrichOptions(dbImportPipelineOptions, dataImportPipeLineConfig));
+  }
 
-    runDBImport(options);
+  private DataImportPipelineOptions enrichOptions(
+      DataImportPipelineOptions dataImportPipelineOptions,
+      Map<String, String> dataImportPipelineConfig) {
+
+    dataImportPipelineOptions
+        .setProject(dataImportPipelineConfig.get(PROJECT));
+    dataImportPipelineOptions.setDataSet(dataImportPipelineConfig.get(DATA_SET));
+    dataImportPipelineOptions.setTempLocation(dataImportPipelineConfig.get(TEMP_LOCATION));
+    dataImportPipelineOptions.setDLPConfigBucket(dataImportPipelineConfig.get(DLP_CONFIG_BUCKET));
+    dataImportPipelineOptions.setDLPConfigObject(dataImportPipelineConfig.get(DLP_CONFIG_OBJECT));
+    dataImportPipelineOptions.setJDBCSpec(dataImportPipelineConfig.get(JDBC_SPEC));
+    dataImportPipelineOptions.setOffsetCount(
+        Integer.valueOf(dataImportPipelineConfig.get(OFFSET_COUNT)));
+
+    return dataImportPipelineOptions;
   }
 
   @SuppressWarnings("serial")
-  public static void runDBImport(DBImportPipelineOptions options) {
+  public static void runDBImport(DataImportPipelineOptions options) {
 
     Pipeline p = Pipeline.create(options);
 
@@ -72,19 +97,20 @@ public class DBImportPipeline {
             CoderProviders.fromStaticMethods(SqlTable.class, DeterministicKeyCoder.class));
 
     PCollection<ValueProvider<String>> jdbcString =
-        p.apply("Check DB Properties", Create.of(options.getJDBCSpec()));
+        p.apply("Check DB Properties",
+            Create.of(CustomValueProvider.getValueProviderOf(options.getJDBCSpec())));
 
     PCollectionTuple tableCollection =
         jdbcString.apply(
             "Create Table Map",
             ParDo.of(
-                    new CreateTableMapDoFn(
-                        options.getExcludedTables(),
-                        options.getDLPConfigBucket(),
-                        options.getDLPConfigObject(),
-                        options.getJDBCSpec(),
-                        options.getDataSet(),
-                        options.as(GcpOptions.class).getProject()))
+                new CreateTableMapDoFn(
+                    options.getExcludedTables(),
+                    options.getDLPConfigBucket(),
+                    options.getDLPConfigObject(),
+                    options.getJDBCSpec(),
+                    options.getDataSet(),
+                    options.as(GcpOptions.class).getProject()))
                 .withOutputTags(
                     CreateTableMapDoFn.successTag,
                     TupleTagList.of(CreateTableMapDoFn.deadLetterTag)));
@@ -94,7 +120,9 @@ public class DBImportPipeline {
             .get(CreateTableMapDoFn.successTag)
             .apply(
                 "Create DB Rows",
-                ParDo.of(new TableToDbRowFn(options.getJDBCSpec(), options.getOffsetCount()))
+                ParDo.of(new TableToDbRowFn(
+                    CustomValueProvider.getValueProviderOf(options.getJDBCSpec()),
+                    CustomValueProvider.getValueProviderOf(options.getOffsetCount())))
                     .withOutputTags(
                         TableToDbRowFn.successTag, TupleTagList.of(TableToDbRowFn.deadLetterTag)));
 
@@ -116,7 +144,8 @@ public class DBImportPipeline {
         successRecords.apply(
             "Write to BQ",
             BigQueryIO.<KV<SqlTable, TableRow>>write()
-                .to(new BigQueryTableDestination(options.getDataSet()))
+                .to(new BigQueryTableDestination(
+                    CustomValueProvider.getValueProviderOf(options.getDataSet())))
                 .withFormatFunction(
                     new SerializableFunction<KV<SqlTable, TableRow>, TableRow>() {
 
@@ -146,9 +175,9 @@ public class DBImportPipeline {
                 }));
 
     PCollectionList.of(
-            ImmutableList.of(
-                tableCollection.get(CreateTableMapDoFn.deadLetterTag),
-                dbRowKeyValue.get(TableToDbRowFn.deadLetterTag)))
+        ImmutableList.of(
+            tableCollection.get(CreateTableMapDoFn.deadLetterTag),
+            dbRowKeyValue.get(TableToDbRowFn.deadLetterTag)))
         .apply("Flatten", Flatten.pCollections())
         .apply(
             "Write Log Errors",

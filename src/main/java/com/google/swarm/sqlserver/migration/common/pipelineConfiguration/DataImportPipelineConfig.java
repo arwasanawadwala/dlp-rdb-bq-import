@@ -3,7 +3,7 @@ package com.google.swarm.sqlserver.migration.common.pipelineConfiguration;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Map;
 
-public class FileImportPipelineConfig {
+public class DataImportPipelineConfig {
 
   @JsonProperty("run")
   private boolean run;
@@ -22,6 +22,5 @@ public class FileImportPipelineConfig {
   public Map<String, String> getOptions() {
     return options;
   }
-
 
 }

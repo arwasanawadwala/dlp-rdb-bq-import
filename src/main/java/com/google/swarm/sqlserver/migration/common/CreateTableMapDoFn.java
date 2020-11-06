@@ -14,6 +14,7 @@
 */
 package com.google.swarm.sqlserver.migration.common;
 
+import com.google.swarm.sqlserver.migration.utils.CustomValueProvider;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -29,8 +30,10 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("serial")
 public class CreateTableMapDoFn extends DoFn<ValueProvider<String>, SqlTable> {
 
-  public static TupleTag<SqlTable> successTag = new TupleTag<SqlTable>() {};
-  public static TupleTag<String> deadLetterTag = new TupleTag<String>() {};
+  public static TupleTag<SqlTable> successTag = new TupleTag<SqlTable>() {
+  };
+  public static TupleTag<String> deadLetterTag = new TupleTag<String>() {
+  };
   private static final Logger LOG = LoggerFactory.getLogger(CreateTableMapDoFn.class);
 
   private ValueProvider<String> excludedTables;
@@ -42,18 +45,37 @@ public class CreateTableMapDoFn extends DoFn<ValueProvider<String>, SqlTable> {
 
   private Connection connection = null;
 
+//  public CreateTableMapDoFn(
+//      ValueProvider<String> excludedTables,
+//      ValueProvider<String> dlpConfigBucket,
+//      ValueProvider<String> dlpConfigObject,
+//      ValueProvider<String> jdbcSpec,
+//      ValueProvider<String> dataset,
+//      String projectId) {
+//    this.excludedTables = excludedTables;
+//    this.dlpConfigBucket = dlpConfigBucket;
+//    this.dlpConfigObject = dlpConfigObject;
+//    this.jdbcSpec = jdbcSpec;
+//    this.dataset = dataset;
+//    this.connection = null;
+//    this.projectId = projectId;
+//  }
+
+  // TODO - This conversion has to be thought through. Value providers are for runtime variable.Refer above constructor
+  // reads. Since we are passing through YAML, do we need value providers ? @akhil | @Vishnu
+
   public CreateTableMapDoFn(
-      ValueProvider<String> excludedTables,
-      ValueProvider<String> dlpConfigBucket,
-      ValueProvider<String> dlpConfigObject,
-      ValueProvider<String> jdbcSpec,
-      ValueProvider<String> dataset,
+      String excludedTables,
+      String dlpConfigBucket,
+      String dlpConfigObject,
+      String jdbcSpec,
+      String dataset,
       String projectId) {
-    this.excludedTables = excludedTables;
-    this.dlpConfigBucket = dlpConfigBucket;
-    this.dlpConfigObject = dlpConfigObject;
-    this.jdbcSpec = jdbcSpec;
-    this.dataset = dataset;
+    this.excludedTables = CustomValueProvider.getValueProviderOf(excludedTables);
+    this.dlpConfigBucket = CustomValueProvider.getValueProviderOf(dlpConfigBucket);
+    this.dlpConfigObject = CustomValueProvider.getValueProviderOf(dlpConfigObject);
+    this.jdbcSpec = CustomValueProvider.getValueProviderOf(jdbcSpec);
+    this.dataset = CustomValueProvider.getValueProviderOf(dataset);
     this.connection = null;
     this.projectId = projectId;
   }
