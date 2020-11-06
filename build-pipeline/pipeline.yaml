@@ -6,15 +6,10 @@ steps:
     args: [ 'assemble' ]
     dir: '$REPO_NAME'
     id: 'build-jar'
-  - name: gcr.io/cloud-builders/gcloud
-    entrypoint: 'bash'
+  - name: 'bash'
     args: [ 'source', 'set_env.sh' ]
     dir: '$REPO_NAME/env-setup'
     id: 'setup-environment'
-  #  - name: gcr.io/cloud-builders/gsutil
-  #    args: ['cp', '*.jar', 'gs://spike_oesc/build/dlp-rdb-bq-import.jar']
-  #    dir: '$REPO_NAME/build/libs'
-  #    id: 'deploy-jar'
   - name: gcr.io/cloud-builders/gsutil
     args: [ 'cp', '*.jar', 'gs://${_DATAFLOW_JAR_BUCKET}/composer-builds/dlp-rdb-bq-import-dataflow.jar' ]
     dir: '$REPO_NAME/build/libs'
