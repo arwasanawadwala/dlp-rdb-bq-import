@@ -40,7 +40,7 @@ public class FileImportPipeline {
             .withWriteDisposition(WriteDisposition.WRITE_APPEND)
             .withCreateDisposition(CreateDisposition.CREATE_NEVER)
             .withSchema(FileTableSchema.getTableSchema(
-                new TableSchemaConfigUtil().getParsedMap().getFileTableSchemaMap()
+                new TableSchemaConfigUtil().getSchemaMap().getFileTableSchemaMap()
                     .getPatientTableMap())));
 
     importPipeline.run().waitUntilFinish();

@@ -22,7 +22,7 @@ public class FileRowToBQRowConverter extends DoFn<String, TableRow> {
 
     for (int i = 0; i < parts.length; i++) {
       TableFieldSchema columns = FileTableSchema
-          .getTableSchema(new TableSchemaConfigUtil().getParsedMap().getFileTableSchemaMap()
+          .getTableSchema(new TableSchemaConfigUtil().getSchemaMap().getFileTableSchemaMap()
               .getPatientTableMap()).getFields().get(i);
       row.set(columns.getName(), parts[i]);
     }

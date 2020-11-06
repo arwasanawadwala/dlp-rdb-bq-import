@@ -9,7 +9,7 @@ public class TableSchemaConfigUtil {
 
   private ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
 
-  public TableSchemaConfig getParsedMap() {
+  public TableSchemaConfig getSchemaMap() {
     objectMapper.findAndRegisterModules();
     TableSchemaConfig tableSchemaConfig = null;
     try {
