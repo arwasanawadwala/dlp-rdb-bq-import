@@ -22,7 +22,7 @@ steps:
     id: 'set-composer-jar-ref'
   - name: gcr.io/cloud-builders/gsutil
     args: [ 'cp', 'db-import.py', 'gs://${_DATAFLOW_JAR_BUCKET}/composer-dags' ]
-    dir: '$REPO_NAME/src/workflow-dag'
+    dir: '$REPO_NAME/src/workflow-dags'
     id: 'deploy-processing-pipeline'
   - name: gcr.io/cloud-builders/gcloud
     entrypoint: 'bash'
