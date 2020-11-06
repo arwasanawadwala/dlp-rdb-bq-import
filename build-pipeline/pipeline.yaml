@@ -1,8 +1,6 @@
 substitutions:
-  _GCP_PROJECT_ID: $(gcloud config list --format 'value(core.project)')
-  _PROJECT_NUMBER: $(gcloud projects describe "${GCP_PROJECT_ID}" --format='get(projectNumber)')
-  _DATAFLOW_JAR_BUCKET: "${GCP_PROJECT_ID}-artifacts"
-  _DATAFLOW_STAGING_BUCKET: "${GCP_PROJECT_ID}-artifacts-staging"
+  _DATAFLOW_JAR_BUCKET: "${_PROJECT_ID}-artifacts"
+  _DATAFLOW_STAGING_BUCKET: "${_PROJECT_ID}-artifacts-staging"
   _COMPOSER_REGION: 'us-central1'
   _COMPOSER_ZONE_ID: 'us-central1-a'
   _COMPOSER_ENV_NAME: 'dlp-pipeline-composer'
