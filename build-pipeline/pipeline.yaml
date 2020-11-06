@@ -11,7 +11,8 @@ steps:
     dir: '$REPO_NAME/build/libs'
     id: 'deploy-jar'
   - name: gcr.io/cloud-builders/gsutil
-    args: ['cp', 'gs://spike_oesc/build/dlp-rdb-bq-import_$BUILD_ID.jar', 'gs://${_DATAFLOW_JAR_BUCKET}/composer-builds/dlp-rdb-bq-import-dataflow_$BUILD_ID.jar']
+    args: ['cp', '*.jar', 'gs://${_DATAFLOW_JAR_BUCKET}/composer-builds/dlp-rdb-bq-import-dataflow_$BUILD_ID.jar']
+    dir: '$REPO_NAME/build/libs'
     id: 'copy-jar'
   - name: gcr.io/cloud-builders/gcloud
     args: ['composer', 'environments', 'run', '${_COMPOSER_ENV_NAME}', '--location', '${_COMPOSER_REGION}','variables', '--', '--set', 'dataflow_jar_file', 'dlp-rdb-bq-import-dataflow_$BUILD_ID.jar']
