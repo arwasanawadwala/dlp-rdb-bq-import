@@ -9,6 +9,10 @@ steps:
   - name: gcr.io/cloud-builders/git
     args: [ 'clone', 'https://github.com/arwasanawadwala/dlp-rdb-bq-import.git' ]
     id: 'check-out-source-code'
+  - name: gcr.io/cloud-builders/gsutil
+    args: ['cp', 'data-pipeline-test.py', 'gs://${_DATAFLOW_JAR_BUCKET}']
+    dir: '$REPO_NAME/workflow-dags'
+    id: 'deploy-processing-pipeline-old'
   - name: gcr.io/cloud-builders/gradle:5.6.2-jdk-8
     args: [ 'assemble' ]
     dir: '$REPO_NAME'
