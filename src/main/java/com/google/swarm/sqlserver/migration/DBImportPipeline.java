@@ -24,7 +24,6 @@ import static com.google.swarm.sqlserver.migration.common.pipelineConfiguration.
 
 import com.google.api.services.bigquery.model.TableRow;
 import com.google.common.collect.ImmutableList;
-import com.google.swarm.sqlserver.migration.common.BigQueryTableDestination;
 import com.google.swarm.sqlserver.migration.common.BigQueryTableRowDoFn;
 import com.google.swarm.sqlserver.migration.common.CreateTableMapDoFn;
 import com.google.swarm.sqlserver.migration.common.DLPTokenizationDoFn;
@@ -32,13 +31,12 @@ import com.google.swarm.sqlserver.migration.common.DeterministicKeyCoder;
 import com.google.swarm.sqlserver.migration.common.SqlTable;
 import com.google.swarm.sqlserver.migration.common.TableToDbRowFn;
 import com.google.swarm.sqlserver.migration.common.fileImport.DataImportPipelineOptions;
+import com.google.swarm.sqlserver.migration.common.sink.PipelineBqSink;
 import com.google.swarm.sqlserver.migration.utils.CustomValueProvider;
 import java.util.Map;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.coders.CoderProviders;
 import org.apache.beam.sdk.extensions.gcp.options.GcpOptions;
-import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
-import org.apache.beam.sdk.io.gcp.bigquery.InsertRetryPolicy;
 import org.apache.beam.sdk.io.gcp.bigquery.WriteResult;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.options.ValueProvider;
@@ -46,7 +44,6 @@ import org.apache.beam.sdk.transforms.Create;
 import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.Flatten;
 import org.apache.beam.sdk.transforms.ParDo;
-import org.apache.beam.sdk.transforms.SerializableFunction;
 import org.apache.beam.sdk.transforms.windowing.AfterProcessingTime;
 import org.apache.beam.sdk.transforms.windowing.FixedWindows;
 import org.apache.beam.sdk.transforms.windowing.Window;
@@ -140,25 +137,7 @@ public class DBImportPipeline {
                     .discardingFiredPanes()
                     .withAllowedLateness(Duration.ZERO));
 
-    WriteResult writeResult =
-        successRecords.apply(
-            "Write to BQ",
-            BigQueryIO.<KV<SqlTable, TableRow>>write()
-                .to(new BigQueryTableDestination(
-                    CustomValueProvider.getValueProviderOf(options.getDataSet())))
-                .withFormatFunction(
-                    new SerializableFunction<KV<SqlTable, TableRow>, TableRow>() {
-
-                      @Override
-                      public TableRow apply(KV<SqlTable, TableRow> kv) {
-                        return kv.getValue();
-                      }
-                    })
-                .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_APPEND)
-                .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED)
-                .withMethod(BigQueryIO.Write.Method.STREAMING_INSERTS)
-                .withoutValidation()
-                .withFailedInsertRetryPolicy(InsertRetryPolicy.retryTransientErrors()));
+    WriteResult writeResult = PipelineBqSink.getWriteResult(options, successRecords);
 
     writeResult
         .getFailedInserts()
