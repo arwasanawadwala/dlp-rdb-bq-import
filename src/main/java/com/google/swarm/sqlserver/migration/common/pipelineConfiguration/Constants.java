@@ -11,5 +11,7 @@ public class Constants {
   public static final String OFFSET_COUNT = "offsetCount";
   public static final String DLP_CONFIG_BUCKET = "DLPConfigBucket";
   public static final String DLP_CONFIG_OBJECT = "DLPConfigObject";
+  public static final String IMPORT_TYPE_FILE = "fileImport";
+  public static final String IMPORT_TYPE_DB = "dbImport";
 
 }

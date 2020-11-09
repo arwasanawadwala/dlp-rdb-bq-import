@@ -14,6 +14,7 @@ tableSchema:
 
 pipelineConfig:
   - pipeline:
+     type: fileImport
      run: true
      options:
        dataSet: spike_dlp_oesc_mysql_migration
@@ -24,6 +25,7 @@ pipelineConfig:
        DLPConfigObject: spike_dpl_template_oesc.json
 
   - pipeline:
+     type: fileImport
      run: false
      options:
        dataSet: spike_dlp_oesc_mysql_migration
@@ -34,6 +36,7 @@ pipelineConfig:
        DLPConfigObject: spike_dpl_template_oesc.json
 
   - pipeline:
+      type: dbImport
       run: true
       options:
         project: sookplatformspikes
