@@ -21,7 +21,7 @@ steps:
     args: [ 'composer', 'environments', 'run', '${_COMPOSER_ENV_NAME}', '--location', '${_COMPOSER_REGION}','variables', '--', '--set', 'dataflow_jar_file', 'dlp-rdb-bq-import-dataflow.jar' ]
     id: 'set-composer-jar-ref'
   - name: gcr.io/cloud-builders/gsutil
-    args: ['cp', 'data-pipeline-test.py', '${_DATAFLOW_JAR_BUCKET}']
+    args: ['cp', 'data-pipeline-test.py', 'gs://${_DATAFLOW_JAR_BUCKET}']
     dir: '$REPO_NAME/workflow-dags'
     id: 'deploy-processing-pipeline-old'
   - name: gcr.io/cloud-builders/gsutil
