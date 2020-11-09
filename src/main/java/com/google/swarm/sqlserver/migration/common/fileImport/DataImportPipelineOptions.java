@@ -46,4 +46,11 @@ public interface DataImportPipelineOptions extends PipelineOptions, DataflowPipe
   String getFileDeLimiter();
 
   void setFileDeLimiter(String value);
+
+  @Description("GCS Bucket")
+  String getGcsSinkBucket();
+
+  void setGcsSinkBucket(String value);
+
+
 }

@@ -23,6 +23,7 @@ pipelineConfig:
        tempLocation: gs://spike_oesc/dlp-file-import
        DLPConfigBucket: spike_oesc
        DLPConfigObject: spike_dpl_template_oesc.json
+       gcsSinkBucket: gs://spike_oesc/file_import
 
   - pipeline:
      type: fileImport
@@ -37,7 +38,7 @@ pipelineConfig:
 
   - pipeline:
       type: dbImport
-      run: true
+      run: false
       options:
         project: sookplatformspikes
         dataSet: spike_dlp_oesc_mysql_migration_yml_test

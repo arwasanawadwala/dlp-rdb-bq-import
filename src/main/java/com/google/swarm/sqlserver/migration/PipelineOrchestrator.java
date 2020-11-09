@@ -19,7 +19,8 @@ public class PipelineOrchestrator {
       if (pipelineConfig.getDataImportPipelineConfig().isRun()) {
         if (pipelineConfig.getDataImportPipelineConfig().getType().equals(IMPORT_TYPE_FILE)) {
           fileImportPipeline
-            .runFileImportPipeline(args, pipelineConfig.getDataImportPipelineConfig().getOptions());
+              .runFileImportPipeline(args,
+                  pipelineConfig.getDataImportPipelineConfig().getOptions());
         } else if (pipelineConfig.getDataImportPipelineConfig().getType().equals(IMPORT_TYPE_DB)) {
           dbImportPipeline
               .runDBImportPipeline(args, pipelineConfig.getDataImportPipelineConfig().getOptions());
