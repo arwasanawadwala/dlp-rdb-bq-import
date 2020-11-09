@@ -13,5 +13,6 @@ public class Constants {
   public static final String DLP_CONFIG_OBJECT = "DLPConfigObject";
   public static final String IMPORT_TYPE_FILE = "fileImport";
   public static final String IMPORT_TYPE_DB = "dbImport";
+  public static final String GCS_SINK_BUCKET = "gcsSinkBucket";
 
 }

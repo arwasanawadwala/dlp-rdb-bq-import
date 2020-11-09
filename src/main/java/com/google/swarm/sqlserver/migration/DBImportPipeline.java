@@ -137,7 +137,9 @@ public class DBImportPipeline {
                     .discardingFiredPanes()
                     .withAllowedLateness(Duration.ZERO));
 
-    WriteResult writeResult = PipelineBqSink.getWriteResult(options, successRecords);
+    WriteResult writeResult = PipelineBqSink.getWriteResultToBigQuery(options, successRecords);
+
+
 
     writeResult
         .getFailedInserts()
