@@ -9,11 +9,6 @@ steps:
   - name: gcr.io/cloud-builders/git
     args: [ 'clone', 'https://github.com/arwasanawadwala/dlp-rdb-bq-import.git' ]
     id: 'check-out-source-code'
-  - name: gcr.io/cloud-builders/gcloud
-    entrypoint: 'bash'
-    args: ['cat', 'data-pipeline-test.py']
-    dir: '$REPO_NAME/workflow-dags'
-    id: 'print file'
   - name: gcr.io/cloud-builders/gsutil
     args: ['cp', 'data-pipeline-test.py', 'gs://${_DATAFLOW_JAR_BUCKET}/data-pipeline-test.py']
     dir: '$REPO_NAME/workflow-dags'
