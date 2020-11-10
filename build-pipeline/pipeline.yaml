@@ -21,6 +21,7 @@ steps:
   - name: gcr.io/cloud-builders/gcloud
     entrypoint: 'bash'
     args: ['set_composer_variables.sh']
+    dir: '$REPO_NAME/env-setup'
     id: 'set-composer-environment'
   - name: gcr.io/cloud-builders/gsutil
     args: [ 'cp', '*.py', 'gs://${_DATAFLOW_JAR_BUCKET}/composer-dags' ]
