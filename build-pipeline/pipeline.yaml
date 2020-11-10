@@ -7,14 +7,11 @@ substitutions:
   _COMPOSER_DAG_NAME: 'db-import'
 steps:
   - name: gcr.io/cloud-builders/git
-    args: [ 'clone', 'https://github.com/arwasanawadwala/dlp-rdb-bq-import.git' ]
+    args: [ 'clone', 'https://github.com/krishnachaitanya-v/dlp-rdb-bq-import.git' ]
     id: 'clone-source-code'
   - name: gcr.io/cloud-builders/git
     args: [ 'fetch' ]
     id: 'fetch'
-  - name: gcr.io/cloud-builders/git
-    args: [ 'checkout', '-b', 'branch', 'origin/cicd' ]
-    id: 'checkout-source-code'
   - name: gcr.io/cloud-builders/gcloud
     entrypoint: 'bash'
     args: [ '-c', 'ls' ]
@@ -31,7 +28,7 @@ steps:
   - name: gcr.io/cloud-builders/gcloud
     entrypoint: 'bash'
     args: [ '-c', 'ls' , 'build-pipeline' ]
-    dir: '$REPO_NAME/src'
+    dir: '$REPO_NAME'
     id: 'list-dir'
   #  - name: gcr.io/cloud-builders/gsutil
   #    args: [ 'cp', '*.py', 'gs://${_DATAFLOW_JAR_BUCKET}/composer-dags' ]
@@ -40,7 +37,7 @@ steps:
   - name: gcr.io/cloud-builders/gcloud
     entrypoint: 'bash'
     args: [ '-c', 'wait_for_dag_deployed.sh', '${_COMPOSER_ENV_NAME}', '${_COMPOSER_REGION}', '${_COMPOSER_DAG_NAME}', '6', '20' ]
-    dir: '$REPO_NAME/src/build-pipeline'
+    dir: '$REPO_NAME/build-pipeline'
     id: 'wait-for-dag-deployed-on-composer'
   - name: gcr.io/cloud-builders/gcloud
     args: [ 'composer', 'environments', 'run', '${_COMPOSER_ENV_NAME}', '--location', '${_COMPOSER_REGION}', 'trigger_dag', '--', '${_COMPOSER_DAG_NAME}', '--run_id=$BUILD_ID' ]
