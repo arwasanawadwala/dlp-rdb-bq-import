@@ -21,7 +21,7 @@ steps:
   - name: gcr.io/cloud-builders/gsutil
     args: [ 'cp', '*.py', 'gs://${_DATAFLOW_JAR_BUCKET}/composer-dags' ]
     dir: '$REPO_NAME/workflow-dags'
-    id: 'deploy-processing-pipeline'
+    id: 'copy-dags'
   - name: gcr.io/cloud-builders/gsutil
     args: [ 'cp', 'gs://${_DATAFLOW_JAR_BUCKET}/composer-dags', 'gs://${_COMPOSER_DAG_BUCKET}' ]
     dir: '$REPO_NAME/workflow-dags'
