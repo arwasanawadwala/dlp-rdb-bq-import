@@ -11,8 +11,10 @@ public class Constants {
   public static final String OFFSET_COUNT = "offsetCount";
   public static final String DLP_CONFIG_BUCKET = "DLPConfigBucket";
   public static final String DLP_CONFIG_OBJECT = "DLPConfigObject";
-  public static final String IMPORT_TYPE_FILE = "fileImport";
-  public static final String IMPORT_TYPE_DB = "dbImport";
+  public static final String FILE_SOURCE = "file";
+  public static final String DB_SOURCE = "db";
   public static final String GCS_SINK_BUCKET = "gcsSinkBucket";
-
+  public static final String GCS = "gcs";
+  public static final String BIG_QUERY = "bq";
+  public static final String CONFIG_FILE_PATH = "configFilePath";
 }

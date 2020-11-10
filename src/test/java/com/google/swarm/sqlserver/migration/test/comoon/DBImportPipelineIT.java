@@ -74,7 +74,7 @@ public class DBImportPipelineIT {
     options.setJDBCSpec(StaticValueProvider.of(TestUtil.JDBC_SPEC));
     options.setTempLocation(TestUtil.TEMP_LOCATION);
     options.setOffsetCount(StaticValueProvider.of(TestUtil.OFFSET));
-    DBImportPipeline.runDBImport(options);
+    DBImportPipeline.runDBImport(options, sink);
 
     QueryResponse response =
         bqClient.queryWithRetries(
