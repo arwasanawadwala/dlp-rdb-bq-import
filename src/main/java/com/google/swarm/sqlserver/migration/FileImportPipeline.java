@@ -9,6 +9,7 @@ import static com.google.swarm.sqlserver.migration.common.pipelineConfiguration.
 import static com.google.swarm.sqlserver.migration.common.pipelineConfiguration.Constants.GCS_SINK_BUCKET;
 import static com.google.swarm.sqlserver.migration.common.pipelineConfiguration.Constants.INPUT_FILE_PATH;
 import static com.google.swarm.sqlserver.migration.common.pipelineConfiguration.Constants.PROJECT;
+import static com.google.swarm.sqlserver.migration.common.pipelineConfiguration.Constants.TABLE_SCHEMA_FILE_PATH;
 import static com.google.swarm.sqlserver.migration.common.pipelineConfiguration.Constants.TEMP_LOCATION;
 
 import com.google.swarm.sqlserver.migration.common.fileImport.DataImportPipelineOptions;
@@ -49,6 +50,8 @@ public class FileImportPipeline {
     dataImportPipelineOptions.setDLPConfigBucket(dataImportPipelineConfig.get(DLP_CONFIG_BUCKET));
     dataImportPipelineOptions.setDLPConfigObject(dataImportPipelineConfig.get(DLP_CONFIG_OBJECT));
     dataImportPipelineOptions.setGcsSinkBucket(dataImportPipelineConfig.get(GCS_SINK_BUCKET));
+    dataImportPipelineOptions
+        .setTableSchemaPath(dataImportPipelineConfig.get(TABLE_SCHEMA_FILE_PATH));
 
     return dataImportPipelineOptions;
   }

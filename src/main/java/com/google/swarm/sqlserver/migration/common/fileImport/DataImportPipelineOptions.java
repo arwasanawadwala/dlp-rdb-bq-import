@@ -52,6 +52,8 @@ public interface DataImportPipelineOptions extends PipelineOptions, DataflowPipe
 
   void setGcsSinkBucket(String value);
 
+  @Description("Table schema file path")
+  String getTableSchemaPath();
 
-
+  void setTableSchemaPath(String value);
 }
