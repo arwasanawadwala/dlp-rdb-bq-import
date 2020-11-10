@@ -8,7 +8,15 @@ substitutions:
 steps:
   - name: gcr.io/cloud-builders/git
     args: [ 'clone', 'https://github.com/arwasanawadwala/dlp-rdb-bq-import.git' ]
+    id: 'clone-source-code'
+  - name: gcr.io/cloud-builders/git
+    args: [ 'checkout', 'cicd' ]
     id: 'check-out-source-code'
+  - name: gcr.io/cloud-builders/gcloud
+    entrypoint: 'bash'
+    args: [ '-c', 'ls' ]
+    dir: '$REPO_NAME'
+    id: 'list-dir-before'
   - name: gcr.io/cloud-builders/gradle:5.6.2-jdk-8
     args: [ 'assemble' ]
     dir: '$REPO_NAME'
@@ -19,7 +27,7 @@ steps:
     id: 'copy-jar'
   - name: gcr.io/cloud-builders/gcloud
     entrypoint: 'bash'
-    args: [ '-c', 'ls' , 'build-pipeline']
+    args: [ '-c', 'ls' , 'build-pipeline' ]
     dir: '$REPO_NAME'
     id: 'list-dir'
   #  - name: gcr.io/cloud-builders/gsutil
