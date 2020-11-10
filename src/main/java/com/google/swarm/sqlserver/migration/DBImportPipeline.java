@@ -14,9 +14,12 @@
 */
 package com.google.swarm.sqlserver.migration;
 
+import static com.google.swarm.sqlserver.migration.common.pipelineConfiguration.Constants.BIG_QUERY;
 import static com.google.swarm.sqlserver.migration.common.pipelineConfiguration.Constants.DATA_SET;
 import static com.google.swarm.sqlserver.migration.common.pipelineConfiguration.Constants.DLP_CONFIG_BUCKET;
 import static com.google.swarm.sqlserver.migration.common.pipelineConfiguration.Constants.DLP_CONFIG_OBJECT;
+import static com.google.swarm.sqlserver.migration.common.pipelineConfiguration.Constants.GCS;
+import static com.google.swarm.sqlserver.migration.common.pipelineConfiguration.Constants.GCS_SINK_BUCKET;
 import static com.google.swarm.sqlserver.migration.common.pipelineConfiguration.Constants.JDBC_SPEC;
 import static com.google.swarm.sqlserver.migration.common.pipelineConfiguration.Constants.OFFSET_COUNT;
 import static com.google.swarm.sqlserver.migration.common.pipelineConfiguration.Constants.PROJECT;
@@ -37,6 +40,7 @@ import java.util.Map;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.coders.CoderProviders;
 import org.apache.beam.sdk.extensions.gcp.options.GcpOptions;
+import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.io.gcp.bigquery.WriteResult;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.options.ValueProvider;
@@ -60,11 +64,12 @@ public class DBImportPipeline {
 
   public static final Logger LOG = LoggerFactory.getLogger(DBImportPipeline.class);
 
-  public void runDBImportPipeline(String[] args, Map<String, String> dataImportPipeLineConfig) {
+  public void runDBImportPipeline(String[] args, Map<String, String> dataImportPipeLineConfig,
+      String sink) {
     DataImportPipelineOptions dbImportPipelineOptions =
         PipelineOptionsFactory.fromArgs(args).withValidation().as(DataImportPipelineOptions.class);
 
-    runDBImport(enrichOptions(dbImportPipelineOptions, dataImportPipeLineConfig));
+    runDBImport(enrichOptions(dbImportPipelineOptions, dataImportPipeLineConfig), sink);
   }
 
   private DataImportPipelineOptions enrichOptions(
@@ -80,12 +85,13 @@ public class DBImportPipeline {
     dataImportPipelineOptions.setJDBCSpec(dataImportPipelineConfig.get(JDBC_SPEC));
     dataImportPipelineOptions.setOffsetCount(
         Integer.valueOf(dataImportPipelineConfig.get(OFFSET_COUNT)));
+    dataImportPipelineOptions.setGcsSinkBucket(dataImportPipelineConfig.get(GCS_SINK_BUCKET));
 
     return dataImportPipelineOptions;
   }
 
   @SuppressWarnings("serial")
-  public static void runDBImport(DataImportPipelineOptions options) {
+  public static void runDBImport(DataImportPipelineOptions options, String sink) {
 
     Pipeline p = Pipeline.create(options);
 
@@ -137,24 +143,34 @@ public class DBImportPipeline {
                     .discardingFiredPanes()
                     .withAllowedLateness(Duration.ZERO));
 
-    WriteResult writeResult = PipelineBqSink.getWriteResultToBigQuery(options, successRecords);
+    if (sink.equals(BIG_QUERY)) {
+      WriteResult writeResult = PipelineBqSink.getWriteResultToBigQuery(options, successRecords);
+      writeResult
+          .getFailedInserts()
+          .apply(
+              "LOG BQ Failed Inserts",
+              ParDo.of(
+                  new DoFn<TableRow, TableRow>() {
 
+                    @ProcessElement
+                    public void processElement(ProcessContext c) {
+                      LOG.error("***ERROR*** FAILED INSERT {}", c.element().toString());
+                      c.output(c.element());
+                    }
+                  }));
+    } else if (sink.equals(GCS)) {
+      PCollection<String> successRecordsAsString = successRecords
+          .apply("Covert PCollection format", ParDo.of(
+              new DoFn<KV<SqlTable, TableRow>, String>() {
+                @ProcessElement
+                public void processElement(ProcessContext context) {
+                  context.output(context.element().getValue().toString());
+                }
+              }));
 
-
-    writeResult
-        .getFailedInserts()
-        .apply(
-            "LOG BQ Failed Inserts",
-            ParDo.of(
-                new DoFn<TableRow, TableRow>() {
-
-                  @ProcessElement
-                  public void processElement(ProcessContext c) {
-                    LOG.error("***ERROR*** FAILED INSERT {}", c.element().toString());
-                    c.output(c.element());
-                  }
-                }));
-
+      successRecordsAsString
+          .apply("write data to GCS", TextIO.write().to(options.getGcsSinkBucket()));
+    }
     PCollectionList.of(
         ImmutableList.of(
             tableCollection.get(CreateTableMapDoFn.deadLetterTag),

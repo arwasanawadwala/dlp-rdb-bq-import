@@ -8,9 +8,9 @@ import java.util.List;
 public class DataFlowPipelineConfig {
 
   @JsonProperty("pipelineConfig")
-  private List<PipelineConfig> pipelineConfig;
+  private PipelineConfig pipelineConfig;
 
-  public List<PipelineConfig> getPipelineConfig() {
+  public PipelineConfig getPipelineConfig() {
     return pipelineConfig;
   }
 }

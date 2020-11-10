@@ -1,0 +1,12 @@
+pipelineConfig:
+  pipeline:
+    source: file
+    sink: gcs
+    options:
+      dataSet: spike_dlp_oesc_mysql_migration
+      inputFilePath: /Users/akhilghatiki/oesc/spikes/dlp-rdb-bq-import/src/main/resources/oesc_on_prem_patient.tsv
+      fileDeLimiter: \t
+      tempLocation: gs://spike_oesc/dlp-file-import
+      DLPConfigBucket: spike_oesc
+      DLPConfigObject: spike_dpl_template_oesc.json
+      gcsSinkBucket: gs://spike_oesc/file_import

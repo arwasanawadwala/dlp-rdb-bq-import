@@ -9,12 +9,11 @@ public class PipelineRunnerConfigUtil {
 
   private ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
 
-  public DataFlowPipelineConfig getPipelineConfigMap() {
+  public DataFlowPipelineConfig getPipelineConfigMap(String configFilePath) {
     objectMapper.findAndRegisterModules();
     DataFlowPipelineConfig dataFlowPipelineConfig = null;
     try {
-      dataFlowPipelineConfig = objectMapper.readValue(new File(
-          "/Users/akhilghatiki/oesc/spikes/dlp-rdb-bq-import/src/main/resources/tableSchema.yml"),
+      dataFlowPipelineConfig = objectMapper.readValue(new File(configFilePath),
           DataFlowPipelineConfig.class);
     } catch (IOException e) {
       e.printStackTrace();
