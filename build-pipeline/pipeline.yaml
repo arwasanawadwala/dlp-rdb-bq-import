@@ -9,9 +9,6 @@ steps:
   - name: gcr.io/cloud-builders/git
     args: [ 'clone', 'https://github.com/arwasanawadwala/dlp-rdb-bq-import.git' ]
     id: 'clone-source-code'
-  - name: gcr.io/cloud-builders/git
-    args: [ 'checkout', 'cicd' ]
-    id: 'check-out-source-code'
   - name: gcr.io/cloud-builders/gcloud
     entrypoint: 'bash'
     args: [ '-c', 'ls' ]
