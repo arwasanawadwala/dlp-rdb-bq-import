@@ -12,7 +12,7 @@ steps:
     id: 'clone-source-code'
   - name: gcr.io/cloud-builders/gcloud
     entrypoint: 'bash'
-    args: ['set_env.sh']
+    args: [ 'set_env.sh' ]
     dir: '$REPO_NAME/env-setup'
     id: 'set-build-environment'
   - name: gcr.io/cloud-builders/gradle:5.6.2-jdk-8
@@ -25,7 +25,7 @@ steps:
     id: 'copy-jar'
   - name: gcr.io/cloud-builders/gcloud
     entrypoint: 'bash'
-    args: ['set_composer_variables.sh']
+    args: [ 'set_composer_variables.sh' ]
     dir: '$REPO_NAME/env-setup'
     id: 'set-composer-environment'
   - name: gcr.io/cloud-builders/gsutil
