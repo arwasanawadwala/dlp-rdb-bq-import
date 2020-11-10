@@ -17,4 +17,5 @@ public class Constants {
   public static final String GCS = "gcs";
   public static final String BIG_QUERY = "bq";
   public static final String CONFIG_FILE_PATH = "configFilePath";
+  public static final String TABLE_SCHEMA_FILE_PATH = "tableSchemaPath";
 }

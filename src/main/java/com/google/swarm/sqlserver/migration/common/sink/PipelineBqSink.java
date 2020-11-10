@@ -8,8 +8,6 @@ import com.google.swarm.sqlserver.migration.common.fileImport.FileRowToBQRowConv
 import com.google.swarm.sqlserver.migration.common.fileImport.FileTableSchema;
 import com.google.swarm.sqlserver.migration.common.fileImport.config.TableSchemaConfigUtil;
 import com.google.swarm.sqlserver.migration.utils.CustomValueProvider;
-import org.apache.beam.sdk.Pipeline;
-import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.CreateDisposition;
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.WriteDisposition;
@@ -47,13 +45,15 @@ public class PipelineBqSink {
   public static void WriteFileImportToBQ(DataImportPipelineOptions options,
       PCollection<String> file_data) {
     file_data.apply("transform to Big query row",
-        ParDo.of(new FileRowToBQRowConverter(options.getFileDeLimiter())))
+        ParDo.of(new FileRowToBQRowConverter(options.getFileDeLimiter(),
+            options.getTableSchemaPath())))
         .apply("write to big query", BigQueryIO.<TableRow>writeTableRows()
             .to("sookplatformspikes:spike_dlp_oesc_mysql_migration.oesc_on_prem_patient")
             .withWriteDisposition(WriteDisposition.WRITE_APPEND)
             .withCreateDisposition(CreateDisposition.CREATE_NEVER)
             .withSchema(FileTableSchema.getTableSchema(
-                new TableSchemaConfigUtil().getSchemaMap().getFileTableSchemaMap()
+                new TableSchemaConfigUtil().getSchemaMap(options.getTableSchemaPath())
+                    .getFileTableSchemaMap()
                     .getPatientTableMap())));
   }
 

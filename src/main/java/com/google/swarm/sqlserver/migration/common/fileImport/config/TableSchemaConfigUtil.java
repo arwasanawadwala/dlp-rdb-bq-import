@@ -9,12 +9,11 @@ public class TableSchemaConfigUtil {
 
   private ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
 
-  public TableSchemaConfig getSchemaMap() {
+  public TableSchemaConfig getSchemaMap(String tableSchemaFilePath) {
     objectMapper.findAndRegisterModules();
     TableSchemaConfig tableSchemaConfig = null;
     try {
-      tableSchemaConfig = objectMapper.readValue(new File(
-              "/Users/akhilghatiki/oesc/spikes/dlp-rdb-bq-import/src/main/resources/tableSchema.yml"),
+      tableSchemaConfig = objectMapper.readValue(new File(tableSchemaFilePath),
           TableSchemaConfig.class);
     } catch (IOException e) {
       e.printStackTrace();
