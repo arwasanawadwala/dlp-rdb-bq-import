@@ -18,9 +18,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-gcloud composer environments run "${COMPOSER_ENV_NAME}"  --location "${COMPOSER_REGION}" variables -- --set "gcp_project" "${GCP_PROJECT_ID}"
+gcloud composer environments run "${COMPOSER_ENV_NAME}"  --location "${COMPOSER_REGION}" variables -- --set "gcp_project" "${PROJECT_ID}"
 gcloud composer environments run "${COMPOSER_ENV_NAME}"  --location "${COMPOSER_REGION}" variables -- --set "gcp_region" "${COMPOSER_REGION}"
 gcloud composer environments run "${COMPOSER_ENV_NAME}"  --location "${COMPOSER_REGION}" variables -- --set "gcp_zone" "${COMPOSER_ZONE_ID}"
 gcloud composer environments run "${COMPOSER_ENV_NAME}"  --location "${COMPOSER_REGION}" variables -- --set "dataflow_jar_location" "${DATAFLOW_JAR_BUCKET}"
-gcloud composer environments run "${COMPOSER_ENV_NAME}"  --location "${COMPOSER_REGION}" variables -- --set "dataflow_jar_file" "to_be_overriden"
+gcloud composer environments run "${COMPOSER_ENV_NAME}"  --location "${COMPOSER_REGION}" variables -- --set "dataflow_jar_file" "dlp-rdb-bq-import-dataflow.jar"
 gcloud composer environments run "${COMPOSER_ENV_NAME}"  --location "${COMPOSER_REGION}" variables -- --set "dataflow_staging_bucket" "${DATAFLOW_STAGING_BUCKET}"

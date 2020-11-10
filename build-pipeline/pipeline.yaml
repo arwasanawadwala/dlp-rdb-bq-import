@@ -18,6 +18,10 @@ steps:
     args: [ 'cp', '*.jar', 'gs://${_DATAFLOW_JAR_BUCKET}/composer-builds/dlp-rdb-bq-import-dataflow.jar' ]
     dir: '$REPO_NAME/build/libs'
     id: 'copy-jar'
+  - name: gcr.io/cloud-builders/gcloud
+    entrypoint: 'bash'
+    args: ['set_composer_variables.sh']
+    id: 'set-composer-environment'
   - name: gcr.io/cloud-builders/gsutil
     args: [ 'cp', '*.py', 'gs://${_DATAFLOW_JAR_BUCKET}/composer-dags' ]
     dir: '$REPO_NAME/workflow-dags'
@@ -26,9 +30,6 @@ steps:
     args: [ 'cp', '-r', 'gs://${_DATAFLOW_JAR_BUCKET}/composer-dags', 'gs://${_COMPOSER_DAG_BUCKET}' ]
     dir: '$REPO_NAME/workflow-dags'
     id: 'deploy-processing-pipeline'
-  - name: gcr.io/cloud-builders/gcloud
-    args: [ 'composer', 'environments', 'run', '${_COMPOSER_ENV_NAME}', '--location', '${_COMPOSER_REGION}','variables', '--', '--set', 'dataflow_jar_file', 'dlp-rdb-bq-import-dataflow.jar' ]
-    id: 'set-composer-jar-ref'
   - name: gcr.io/cloud-builders/gcloud
     entrypoint: 'bash'
     args: [ 'wait_for_dag_deployed.sh', '${_COMPOSER_ENV_NAME}', '${_COMPOSER_REGION}', '${_COMPOSER_DAG_NAME}', '6', '20' ]
