@@ -17,7 +17,8 @@ steps:
     args: [ 'cp', '*.jar', 'gs://${_DATAFLOW_JAR_BUCKET}/composer-builds/dlp-rdb-bq-import-dataflow.jar' ]
     dir: '$REPO_NAME/build/libs'
     id: 'copy-jar'
-  - name: gcr.io/cloud-builders/gsutil
+  - name: gcr.io/cloud-builders/gcloud
+    entrypoint: 'bash'
     args: [ 'ls' ]
     dir: '$REPO_NAME/build-pipeline'
     id: 'list-dir'
