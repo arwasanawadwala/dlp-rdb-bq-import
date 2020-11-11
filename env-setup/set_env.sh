@@ -18,16 +18,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-export REPO_NAME='dlp-rdb-bq-import'
-export GCP_PROJECT_ID=$(gcloud config list --format 'value(core.project)')
-export PROJECT_NUMBER=$(gcloud projects describe "${GCP_PROJECT_ID}" --format='get(projectNumber)')
-
-export DATAFLOW_JAR_BUCKET="${GCP_PROJECT_ID}-artifacts"
-export DATAFLOW_STAGING_BUCKET="${GCP_PROJECT_ID}-artifacts-staging"
-
-export COMPOSER_REGION='us-central1'
-export COMPOSER_ZONE_ID='us-central1-a'
-
-export COMPOSER_ENV_NAME='dlp-pipeline-composer'
-
-export COMPOSER_DAG_NAME='db-import'
+export _PROJECT_NUMBER=$(gcloud projects describe "${PROJECT_ID}" --format='get(projectNumber)')
+export _DATAFLOW_JAR_BUCKET="${GCP_PROJECT_ID}-artifacts"
+export _DATAFLOW_STAGING_BUCKET="${GCP_PROJECT_ID}-artifacts-staging"
+export _COMPOSER_REGION='us-central1'
+export _COMPOSER_ZONE_ID='us-central1-a'
+export _COMPOSER_ENV_NAME='dlp-pipeline-composer'
+export _COMPOSER_DAG_NAME='db-import'

@@ -18,9 +18,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-gcloud composer environments run "${COMPOSER_ENV_NAME}"  --location "${COMPOSER_REGION}" variables -- --set "gcp_project" "${PROJECT_ID}"
-gcloud composer environments run "${COMPOSER_ENV_NAME}"  --location "${COMPOSER_REGION}" variables -- --set "gcp_region" "${COMPOSER_REGION}"
-gcloud composer environments run "${COMPOSER_ENV_NAME}"  --location "${COMPOSER_REGION}" variables -- --set "gcp_zone" "${COMPOSER_ZONE_ID}"
-gcloud composer environments run "${COMPOSER_ENV_NAME}"  --location "${COMPOSER_REGION}" variables -- --set "dataflow_jar_location" "${DATAFLOW_JAR_BUCKET}"
-gcloud composer environments run "${COMPOSER_ENV_NAME}"  --location "${COMPOSER_REGION}" variables -- --set "dataflow_jar_file" "dlp-rdb-bq-import-dataflow.jar"
-gcloud composer environments run "${COMPOSER_ENV_NAME}"  --location "${COMPOSER_REGION}" variables -- --set "dataflow_staging_bucket" "${DATAFLOW_STAGING_BUCKET}"
+echo "PROJECT_ID=${PROJECT_ID}"
+echo "_PROJECT_NUMBER=${_PROJECT_NUMBER}"
+echo "_DATAFLOW_JAR_BUCKET=${_DATAFLOW_JAR_BUCKET}"
+echo "_DATAFLOW_STAGING_BUCKET=${_DATAFLOW_STAGING_BUCKET}"
+echo "_COMPOSER_REGION=${_COMPOSER_REGION}"
+echo "_COMPOSER_ZONE_ID=${_COMPOSER_ZONE_ID}"
+echo "_COMPOSER_ENV_NAME=${_COMPOSER_ENV_NAME}"
+echo "_COMPOSER_DAG_NAME=${_COMPOSER_DAG_NAME}"
+
+
+gcloud composer environments run "${_COMPOSER_ENV_NAME}"  --location "${_COMPOSER_REGION}" variables -- --set "gcp_project" "${PROJECT_ID}"
+gcloud composer environments run "${_COMPOSER_ENV_NAME}"  --location "${_COMPOSER_REGION}" variables -- --set "gcp_region" "${_COMPOSER_REGION}"
+gcloud composer environments run "${_COMPOSER_ENV_NAME}"  --location "${_COMPOSER_REGION}" variables -- --set "gcp_zone" "${_COMPOSER_ZONE_ID}"
+gcloud composer environments run "${_COMPOSER_ENV_NAME}"  --location "${_COMPOSER_REGION}" variables -- --set "dataflow_jar_location" "${_DATAFLOW_JAR_BUCKET}"
+gcloud composer environments run "${_COMPOSER_ENV_NAME}"  --location "${_COMPOSER_REGION}" variables -- --set "dataflow_jar_file" "dlp-rdb-bq-import-dataflow.jar"
+gcloud composer environments run "${_COMPOSER_ENV_NAME}"  --location "${_COMPOSER_REGION}" variables -- --set "dataflow_staging_bucket" "${_DATAFLOW_STAGING_BUCKET}"

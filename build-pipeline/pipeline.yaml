@@ -1,11 +1,11 @@
-substitutions:
-  _DATAFLOW_JAR_BUCKET: "${PROJECT_ID}-artifacts"
-  _DATAFLOW_STAGING_BUCKET: "${PROJECT_ID}-artifacts-staging"
-  _COMPOSER_REGION: 'us-central1'
-  _COMPOSER_ZONE_ID: 'us-central1-a'
-  _COMPOSER_ENV_NAME: 'dlp-pipeline-composer'
-  _COMPOSER_DAG_NAME: 'db-import'
-  _COMPOSER_DAG_BUCKET: 'us-central1-dlp-pipeline-co-93f5daf4-bucket/dags'
+#substitutions:
+#  _DATAFLOW_JAR_BUCKET: "${PROJECT_ID}-artifacts"
+#  _DATAFLOW_STAGING_BUCKET: "${PROJECT_ID}-artifacts-staging"
+#  _COMPOSER_REGION: 'us-central1'
+#  _COMPOSER_ZONE_ID: 'us-central1-a'
+#  _COMPOSER_ENV_NAME: 'dlp-pipeline-composer'
+#  _COMPOSER_DAG_NAME: 'db-import'
+#  _COMPOSER_DAG_BUCKET: 'us-central1-dlp-pipeline-co-93f5daf4-bucket/dags'
 steps:
   - name: gcr.io/cloud-builders/git
     args: [ 'clone', 'https://github.com/krishnachaitanya-v/dlp-rdb-bq-import.git' ]
