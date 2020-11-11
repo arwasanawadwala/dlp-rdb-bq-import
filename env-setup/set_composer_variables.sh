@@ -18,7 +18,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-echo "PROJECT_ID=${PROJECT_ID}"
+echo "GCP_PROJECT_ID=${GCP_PROJECT_ID}"
 echo "_PROJECT_NUMBER=${_PROJECT_NUMBER}"
 echo "_DATAFLOW_JAR_BUCKET=${_DATAFLOW_JAR_BUCKET}"
 echo "_DATAFLOW_STAGING_BUCKET=${_DATAFLOW_STAGING_BUCKET}"
@@ -28,7 +28,7 @@ echo "_COMPOSER_ENV_NAME=${_COMPOSER_ENV_NAME}"
 echo "_COMPOSER_DAG_NAME=${_COMPOSER_DAG_NAME}"
 
 
-gcloud composer environments run "${_COMPOSER_ENV_NAME}"  --location "${_COMPOSER_REGION}" variables -- --set "gcp_project" "${PROJECT_ID}"
+gcloud composer environments run "${_COMPOSER_ENV_NAME}"  --location "${_COMPOSER_REGION}" variables -- --set "gcp_project" "${GCP_PROJECT_ID}"
 gcloud composer environments run "${_COMPOSER_ENV_NAME}"  --location "${_COMPOSER_REGION}" variables -- --set "gcp_region" "${_COMPOSER_REGION}"
 gcloud composer environments run "${_COMPOSER_ENV_NAME}"  --location "${_COMPOSER_REGION}" variables -- --set "gcp_zone" "${_COMPOSER_ZONE_ID}"
 gcloud composer environments run "${_COMPOSER_ENV_NAME}"  --location "${_COMPOSER_REGION}" variables -- --set "dataflow_jar_location" "${_DATAFLOW_JAR_BUCKET}"

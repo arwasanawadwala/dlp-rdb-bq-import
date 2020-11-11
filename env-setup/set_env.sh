@@ -18,10 +18,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-export _PROJECT_NUMBER=$(gcloud projects describe "${PROJECT_ID}" --format='get(projectNumber)')
+export GCP_PROJECT_ID=$(gcloud config list --format 'value(core.project)')
+
+echo "exporting _PROJECT_NUMBER=$(gcloud projects describe "${GCP_PROJECT_ID}" --format='get(projectNumber)')"
+export _PROJECT_NUMBER=$(gcloud projects describe "${GCP_PROJECT_ID}" --format='get(projectNumber)')
+echo " _PROJECT_NUMBER=${_PROJECT_NUMBER}"
+
+echo "exporting _DATAFLOW_JAR_BUCKET='${GCP_PROJECT_ID}-artifacts'"
 export _DATAFLOW_JAR_BUCKET="${GCP_PROJECT_ID}-artifacts"
+echo " _DATAFLOW_JAR_BUCKET=${_DATAFLOW_JAR_BUCKET}"
+
+echo "exporting _DATAFLOW_STAGING_BUCKET='${GCP_PROJECT_ID}-artifacts-staging'"
 export _DATAFLOW_STAGING_BUCKET="${GCP_PROJECT_ID}-artifacts-staging"
+echo " _DATAFLOW_STAGING_BUCKET=${_DATAFLOW_STAGING_BUCKET}-staging"
+
+echo "exporting _COMPOSER_REGION='us-central1'"
 export _COMPOSER_REGION='us-central1'
+echo " _COMPOSER_REGION=${_COMPOSER_REGION}"
+
+echo "exporting _COMPOSER_ZONE_ID='us-central1-a'"
 export _COMPOSER_ZONE_ID='us-central1-a'
+echo " _COMPOSER_ZONE_ID=${_COMPOSER_ZONE_ID}"
+
+echo "exporting _COMPOSER_ENV_NAME='dlp-pipeline-composer'"
 export _COMPOSER_ENV_NAME='dlp-pipeline-composer'
+echo " _COMPOSER_ENV_NAME=${_COMPOSER_ENV_NAME}"
+
+echo "exporting _COMPOSER_DAG_NAME='db-import'"
 export _COMPOSER_DAG_NAME='db-import'
+echo " _COMPOSER_DAG_NAME=${_COMPOSER_DAG_NAME}"
