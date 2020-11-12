@@ -18,9 +18,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+echo "exporting GCP_PROJECT_ID=\$(gcloud config list --format 'value(core.project)')"
 export GCP_PROJECT_ID=$(gcloud config list --format 'value(core.project)')
 
-echo "exporting _PROJECT_NUMBER=$(gcloud projects describe "${GCP_PROJECT_ID}" --format='get(projectNumber)')"
+echo "exporting _PROJECT_NUMBER=\$(gcloud projects describe "${GCP_PROJECT_ID}" --format='get(projectNumber)')"
 export _PROJECT_NUMBER=$(gcloud projects describe "${GCP_PROJECT_ID}" --format='get(projectNumber)')
 echo " _PROJECT_NUMBER=${_PROJECT_NUMBER}"
 
@@ -48,6 +49,6 @@ echo "exporting _COMPOSER_DAG_NAME='db-import'"
 export _COMPOSER_DAG_NAME='db-import'
 echo " _COMPOSER_DAG_NAME=${_COMPOSER_DAG_NAME}"
 
-echo "exporting _GET_COMPOSER_DAG_BUCKET='gcloud composer environments describe \${_COMPOSER_ENV_NAME} --location \${_COMPOSER_REGION} --format='get(config.dagGcsPrefix)'"
-export _GET_COMPOSER_DAG_BUCKET=${gcloud composer environments describe ${_COMPOSER_ENV_NAME} --location ${_COMPOSER_REGION} --format="get(config.dagGcsPrefix)"}
+echo "exporting _GET_COMPOSER_DAG_BUCKET=\$(gcloud composer environments describe ${_COMPOSER_ENV_NAME} --location ${_COMPOSER_REGION} --format='get(config.dagGcsPrefix))"
+export _GET_COMPOSER_DAG_BUCKET=$(gcloud composer environments describe ${_COMPOSER_ENV_NAME} --location ${_COMPOSER_REGION} --format="get(config.dagGcsPrefix)")
 echo "_GET_COMPOSER_DAG_BUCKET=${_GET_COMPOSER_DAG_BUCKET}"
