@@ -21,12 +21,12 @@ steps:
     id: 'build-jar'
   - name: gcr.io/cloud-builders/gcloud
     entrypoint: 'bash'
-    args: [ 'source /workspace/set_env.sh &&', 'cp', '*.jar', 'gs://${_DATAFLOW_JAR_BUCKET}/composer-builds/dlp-rdb-bq-import-dataflow.jar' ]
+    args: [ '-c', 'source /workspace/set_env.sh &&', 'cp', '*.jar', 'gs://${_DATAFLOW_JAR_BUCKET}/composer-builds/dlp-rdb-bq-import-dataflow.jar' ]
     dir: '$REPO_NAME/build/libs'
     id: 'copy-jar'
   - name: gcr.io/cloud-builders/gcloud
     entrypoint: 'bash'
-    args: [ 'source /workspace/set_env.sh &&', 'composer', 'environments', 'run', '${_COMPOSER_ENV_NAME}', '--location', '${_COMPOSER_REGION}','variables', '--', '--i',
+    args: [ '-c', 'source /workspace/set_env.sh &&', 'composer', 'environments', 'run', '${_COMPOSER_ENV_NAME}', '--location', '${_COMPOSER_REGION}','variables', '--', '--i',
         '{gcp_project=${GCP_PROJECT_ID},
           gcp_region=${_COMPOSER_REGION},
           gcp_zone=${_COMPOSER_ZONE_ID},
@@ -36,19 +36,19 @@ steps:
     id: 'set-composer-environment'
   - name: gcr.io/cloud-builders/gcloud
     entrypoint: 'bash'
-    args: [ 'source /workspace/set_env.sh &&', 'cp', '*.py', 'gs://${_DATAFLOW_JAR_BUCKET}/composer-dags' ]
+    args: [ '-c', 'source /workspace/set_env.sh &&', 'cp', '*.py', 'gs://${_DATAFLOW_JAR_BUCKET}/composer-dags' ]
     dir: '$REPO_NAME/workflow-dags'
     id: 'copy-dags'
   - name: gcr.io/cloud-builders/gcloud
     entrypoint: 'bash'
-    args: [ 'source /workspace/set_env.sh &&', 'cp', '-r', 'gs://${_DATAFLOW_JAR_BUCKET}/composer-dags', '${${_GET_COMPOSER_DAG_BUCKET}}' ]
+    args: [ '-c', 'source /workspace/set_env.sh &&', 'cp', '-r', 'gs://${_DATAFLOW_JAR_BUCKET}/composer-dags', '${${_GET_COMPOSER_DAG_BUCKET}}' ]
     dir: '$REPO_NAME/workflow-dags'
     id: 'deploy-processing-pipeline'
   - name: gcr.io/cloud-builders/gcloud
     entrypoint: 'bash'
-    args: [ 'source /workspace/set_env.sh &&', './wait_for_dag_deployed.sh', '${_COMPOSER_ENV_NAME}', '${_COMPOSER_REGION}', '${_COMPOSER_DAG_NAME}', '6', '20' ]
+    args: [ '-c', 'source /workspace/set_env.sh &&', './wait_for_dag_deployed.sh', '${_COMPOSER_ENV_NAME}', '${_COMPOSER_REGION}', '${_COMPOSER_DAG_NAME}', '6', '20' ]
     dir: '$REPO_NAME/build-pipeline'
     id: 'wait-for-dag-deployed-on-composer'
   - name: gcr.io/cloud-builders/gcloud
-    args: [ 'source /workspace/set_env.sh &&', 'composer', 'environments', 'run', '${_COMPOSER_ENV_NAME}', '--location', '${_COMPOSER_REGION}', 'trigger_dag', '--', '${_COMPOSER_DAG_NAME}', '--run_id=$BUILD_ID' ]
+    args: [ '-c', 'source /workspace/set_env.sh &&', 'composer', 'environments', 'run', '${_COMPOSER_ENV_NAME}', '--location', '${_COMPOSER_REGION}', 'trigger_dag', '--', '${_COMPOSER_DAG_NAME}', '--run_id=$BUILD_ID' ]
     id: 'trigger-pipeline-execution'
