@@ -47,3 +47,7 @@ echo " _COMPOSER_ENV_NAME=${_COMPOSER_ENV_NAME}"
 echo "exporting _COMPOSER_DAG_NAME='db-import'"
 export _COMPOSER_DAG_NAME='db-import'
 echo " _COMPOSER_DAG_NAME=${_COMPOSER_DAG_NAME}"
+
+echo "exporting _GET_COMPOSER_DAG_BUCKET='gcloud composer environments describe \${_COMPOSER_ENV_NAME} --location \${_COMPOSER_REGION} --format='get(config.dagGcsPrefix)'"
+export _GET_COMPOSER_DAG_BUCKET=${gcloud composer environments describe ${_COMPOSER_ENV_NAME} --location ${_COMPOSER_REGION} --format="get(config.dagGcsPrefix)"}
+echo "_GET_COMPOSER_DAG_BUCKET=${_GET_COMPOSER_DAG_BUCKET}"
