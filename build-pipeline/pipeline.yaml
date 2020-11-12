@@ -5,7 +5,7 @@ substitutions:
   _COMPOSER_ZONE_ID: 'us-central1-a'
   _COMPOSER_ENV_NAME: 'dlp-pipeline-composer'
   _COMPOSER_DAG_NAME: 'db-import'
-  _COMPOSER_DAG_BUCKET: '${gcloud composer environments describe ${_COMPOSER_ENV_NAME} --location ${_COMPOSER_REGION} --format="get(config.dagGcsPrefix)"}'
+  _COMPOSER_DAG_BUCKET: '$${gcloud composer environments describe ${_COMPOSER_ENV_NAME} --location ${_COMPOSER_REGION} --format="get(config.dagGcsPrefix)"}'
 
 steps:
   - name: gcr.io/cloud-builders/git
