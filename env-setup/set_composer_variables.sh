@@ -34,3 +34,5 @@ gcloud composer environments run "${_COMPOSER_ENV_NAME}"  --location "${_COMPOSE
 gcloud composer environments run "${_COMPOSER_ENV_NAME}"  --location "${_COMPOSER_REGION}" variables -- --set "dataflow_jar_location" "${_DATAFLOW_JAR_BUCKET}"
 gcloud composer environments run "${_COMPOSER_ENV_NAME}"  --location "${_COMPOSER_REGION}" variables -- --set "dataflow_jar_file" "dlp-rdb-bq-import-dataflow.jar"
 gcloud composer environments run "${_COMPOSER_ENV_NAME}"  --location "${_COMPOSER_REGION}" variables -- --set "dataflow_staging_bucket" "${_DATAFLOW_STAGING_BUCKET}"
+
+gcp_project=${GCP_PROJECT_ID}, gcp_region=${_COMPOSER_REGION}, gcp_zone=${_COMPOSER_ZONE_ID}, dataflow_jar_location=${_DATAFLOW_JAR_BUCKET}, dataflow_jar_file=dlp-rdb-bq-import-dataflow.jar, dataflow_staging_bucket=${_DATAFLOW_STAGING_BUCKET}

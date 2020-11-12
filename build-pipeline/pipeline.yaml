@@ -1,20 +1,21 @@
-#substitutions:
-#  _DATAFLOW_JAR_BUCKET: "${PROJECT_ID}-artifacts"
-#  _DATAFLOW_STAGING_BUCKET: "${PROJECT_ID}-artifacts-staging"
-#  _COMPOSER_REGION: 'us-central1'
-#  _COMPOSER_ZONE_ID: 'us-central1-a'
-#  _COMPOSER_ENV_NAME: 'dlp-pipeline-composer'
-#  _COMPOSER_DAG_NAME: 'db-import'
-#  _COMPOSER_DAG_BUCKET: 'us-central1-dlp-pipeline-co-93f5daf4-bucket/dags'
+substitutions:
+  _DATAFLOW_JAR_BUCKET: "${PROJECT_ID}-artifacts"
+  _DATAFLOW_STAGING_BUCKET: "${PROJECT_ID}-artifacts-staging"
+  _COMPOSER_REGION: 'us-central1'
+  _COMPOSER_ZONE_ID: 'us-central1-a'
+  _COMPOSER_ENV_NAME: 'dlp-pipeline-composer'
+  _COMPOSER_DAG_NAME: 'db-import'
+  _COMPOSER_DAG_BUCKET: '${gcloud composer environments describe ${_COMPOSER_ENV_NAME} --location ${_COMPOSER_REGION} --format="get(config.dagGcsPrefix)"}'
+
 steps:
   - name: gcr.io/cloud-builders/git
     args: [ 'clone', 'https://github.com/krishnachaitanya-v/dlp-rdb-bq-import.git' ]
     id: 'clone-source-code'
-  - name: gcr.io/cloud-builders/gcloud
-    entrypoint: 'bash'
-    args: [ 'set_env.sh' ]
-    dir: '$REPO_NAME/env-setup'
-    id: 'set-build-environment'
+#  - name: gcr.io/cloud-builders/gcloud
+#    entrypoint: 'bash'
+#    args: [ 'set_env.sh' ]
+#    dir: '$REPO_NAME/env-setup'
+#    id: 'set-build-environment'
   - name: gcr.io/cloud-builders/gradle:5.6.2-jdk-8
     args: [ 'assemble' ]
     dir: '$REPO_NAME'
@@ -24,9 +25,7 @@ steps:
     dir: '$REPO_NAME/build/libs'
     id: 'copy-jar'
   - name: gcr.io/cloud-builders/gcloud
-    entrypoint: 'bash'
-    args: [ 'set_composer_variables.sh' ]
-    dir: '$REPO_NAME/env-setup'
+    args: [ 'composer', 'environments', 'run', '${_COMPOSER_ENV_NAME}', '--location', '${_COMPOSER_REGION}','variables', '--', '--i', '{gcp_project=${GCP_PROJECT_ID}, gcp_region=${_COMPOSER_REGION}, gcp_zone=${_COMPOSER_ZONE_ID}, dataflow_jar_location=${_DATAFLOW_JAR_BUCKET}, dataflow_jar_file=dlp-rdb-bq-import-dataflow.jar, dataflow_staging_bucket=${_DATAFLOW_STAGING_BUCKET}}' ]
     id: 'set-composer-environment'
   - name: gcr.io/cloud-builders/gsutil
     args: [ 'cp', '*.py', 'gs://${_DATAFLOW_JAR_BUCKET}/composer-dags' ]
