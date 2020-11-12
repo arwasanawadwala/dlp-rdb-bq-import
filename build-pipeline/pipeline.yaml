@@ -11,7 +11,7 @@ steps:
   - name: gcr.io/cloud-builders/git
     args: [ 'clone', 'https://github.com/krishnachaitanya-v/dlp-rdb-bq-import.git' ]
     id: 'clone-source-code'
-  - name: gcr.io/cloud-builders/gutil
+  - name: gcr.io/cloud-builders/gsutil
     args: [ 'cp', 'set_env.sh', '/workspace/set_env.sh' ]
     dir: '$REPO_NAME/env-setup'
     id: 'set-build-environment'
