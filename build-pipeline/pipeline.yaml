@@ -11,8 +11,9 @@ steps:
   - name: gcr.io/cloud-builders/git
     args: [ 'clone', 'https://github.com/krishnachaitanya-v/dlp-rdb-bq-import.git' ]
     id: 'clone-source-code'
-  - name: 'ubuntu'
-    args: [ 'bash', './env-setup/set_env.sh' ]
+  - name: gcr.io/cloud-builders/gcloud
+    entrypoint: 'bash'
+    args: [ './env-setup/set_env.sh' ]
     dir: '$REPO_NAME'
     env:
       - '_DATAFLOW_JAR_BUCKET=$_DATAFLOW_JAR_BUCKET'
