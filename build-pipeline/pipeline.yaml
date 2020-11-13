@@ -1,32 +1,32 @@
-#substitutions:
-#  _DATAFLOW_JAR_BUCKET: "${PROJECT_ID}-artifacts"
-#  _DATAFLOW_STAGING_BUCKET: "${PROJECT_ID}-artifacts-staging"
-#  _COMPOSER_REGION: 'us-central1'
-#  _COMPOSER_ZONE_ID: 'us-central1-a'
-#  _COMPOSER_ENV_NAME: 'dlp-pipeline-composer'
-#  _COMPOSER_DAG_NAME: 'db-import'
-#  _GET_COMPOSER_DAG_BUCKET: 'gcloud composer environments describe ${_COMPOSER_ENV_NAME} --location ${_COMPOSER_REGION} --format="get(config.dagGcsPrefix)"'
+substitutions:
+  _DATAFLOW_JAR_BUCKET: "${PROJECT_ID}-artifacts"
+  _DATAFLOW_STAGING_BUCKET: "${PROJECT_ID}-artifacts-staging"
+  _COMPOSER_REGION: 'us-central1'
+  _COMPOSER_ZONE_ID: 'us-central1-a'
+  _COMPOSER_ENV_NAME: 'dlp-pipeline-composer'
+  _COMPOSER_DAG_NAME: 'db-import'
+  _GET_COMPOSER_DAG_BUCKET: 'gcloud composer environments describe ${_COMPOSER_ENV_NAME} --location ${_COMPOSER_REGION} --format="get(config.dagGcsPrefix)"'
 #
 steps:
   - name: gcr.io/cloud-builders/git
     args: [ 'clone', 'https://github.com/krishnachaitanya-v/dlp-rdb-bq-import.git' ]
     id: 'clone-source-code'
-  - name: gcr.io/cloud-builders/gcloud
-    entrypoint: 'bash'
-    args: [ './env-setup/set_env.sh' ]
-    dir: '$REPO_NAME'
-    env:
-      - '_DATAFLOW_JAR_BUCKET=$_DATAFLOW_JAR_BUCKET'
-      - '_DATAFLOW_STAGING_BUCKET=$_DATAFLOW_STAGING_BUCKET'
-      - '_COMPOSER_REGION=$_COMPOSER_REGION'
-      - '_COMPOSER_ZONE_ID=$_COMPOSER_ZONE_ID'
-      - '_COMPOSER_ENV_NAME=$_COMPOSER_ENV_NAME'
-      - '_COMPOSER_DAG_NAME=$_COMPOSER_DAG_NAME'
-      - '_COMPOSER_DAG_BUCKET=$_COMPOSER_DAG_BUCKET'
-  - name: gcr.io/cloud-builders/gsutil
-    args: [ 'cp', 'set_env.sh', '/workspace/set_env.sh' ]
-    dir: '$REPO_NAME/env-setup'
-    id: 'set-build-environment'
+#  - name: gcr.io/cloud-builders/gcloud
+#    entrypoint: 'bash'
+#    args: [ './env-setup/set_env.sh' ]
+#    dir: '$REPO_NAME'
+#    env:
+#      - '_DATAFLOW_JAR_BUCKET=$_DATAFLOW_JAR_BUCKET'
+#      - '_DATAFLOW_STAGING_BUCKET=$_DATAFLOW_STAGING_BUCKET'
+#      - '_COMPOSER_REGION=$_COMPOSER_REGION'
+#      - '_COMPOSER_ZONE_ID=$_COMPOSER_ZONE_ID'
+#      - '_COMPOSER_ENV_NAME=$_COMPOSER_ENV_NAME'
+#      - '_COMPOSER_DAG_NAME=$_COMPOSER_DAG_NAME'
+#      - '_COMPOSER_DAG_BUCKET=$_COMPOSER_DAG_BUCKET'
+#  - name: gcr.io/cloud-builders/gsutil
+#    args: [ 'cp', 'set_env.sh', '/workspace/set_env.sh' ]
+#    dir: '$REPO_NAME/env-setup'
+#    id: 'set-build-environment'
   - name: gcr.io/cloud-builders/gradle:5.6.2-jdk-8
     args: [ 'assemble' ]
     dir: '$REPO_NAME'
@@ -36,8 +36,8 @@ steps:
     args:
       - '-c'
       - |
-        echo ${_DATAFLOW_JAR_BUCKET} \
-        && cp build/libs/*.jar gs://${_DATAFLOW_JAR_BUCKET}/composer-builds/dlp-rdb-bq-import-dataflow.jar
+        eval ${_GET_COMPOSER_DAG_BUCKET} > /workspace/test.txt \
+        && cp build/libs/*.jar gs://$(cat /workspace/test.txt)/dlp-rdb-bq-import-dataflow.jar
     dir: '$REPO_NAME'
     #  - name: gcr.io/cloud-builders/gcloud
     #    entrypoint: 'bash'
