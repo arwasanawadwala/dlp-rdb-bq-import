@@ -1,0 +1,1 @@
+cp build/libs/*.jar gs://${_DATAFLOW_JAR_BUCKET}/composer-builds/dlp-rdb-bq-import-dataflow.jar
