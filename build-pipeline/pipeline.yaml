@@ -5,7 +5,7 @@ substitutions:
   _COMPOSER_ZONE_ID: 'us-central1-a'
   _COMPOSER_ENV_NAME: 'dlp-pipeline-composer'
   _COMPOSER_DAG_NAME: 'db-import'
-
+timeout: 1200s
 steps:
   - name: gcr.io/cloud-builders/git
     args: [ 'clone', 'https://github.com/krishnachaitanya-v/dlp-rdb-bq-import.git' ]
