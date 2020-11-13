@@ -26,7 +26,7 @@ steps:
     id: 'get_composer_dag_bucket'
   - name: gcr.io/cloud-builders/gcloud
     entrypoint: 'bash'
-    args: ['-c','cat', '/workspace/composer_env.json']
+    args: [ '-c','cat', '/workspace/composer_env.json' ]
   - name: gcr.io/cloud-builders/gsutil
     args: [ 'cp', '*.jar', 'gs://${_DATAFLOW_JAR_BUCKET}/' ]
     dir: '$REPO_NAME/build/libs'
@@ -36,7 +36,7 @@ steps:
     ]
     id: 'set-composer-environment'
   - name: gcr.io/cloud-builders/gsutil
-    args: [ 'cp', '*.py', '$(${_GET_COMPOSER_DAG_BUCKET})' ]
+    args: [ 'cp', '*.py', 'gs://us-central1-dlp-pipeline-co-3df29c1b-bucket/dags' ]
     dir: '$REPO_NAME/workflow-dags'
     id: 'deploy-processing-pipeline'
   - name: gcr.io/cloud-builders/gcloud
