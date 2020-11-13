@@ -38,7 +38,10 @@ steps:
     dir: '$REPO_NAME/build/libs'
     id: 'deploy-jar'
   - name: gcr.io/cloud-builders/gcloud
-    args: [ 'composer', 'environments', 'create', '${_COMPOSER_ENV_NAME}', '--location', '${_COMPOSER_REGION}', '--update-env-variables=gcp_project=${PROJECT_ID},gcp_region=${_COMPOSER_REGION},gcp_zone=${_COMPOSER_ZONE_ID},dataflow_jar_location=${_DATAFLOW_JAR_BUCKET},dataflow_jar_file=dlp-rdb-bq-import-dataflow.jar,dataflow_staging_bucket=${_DATAFLOW_STAGING_BUCKET}' ]
+    args: [ 'composer', 'environments', 'update', '${_COMPOSER_ENV_NAME}', '--location', '${_COMPOSER_REGION}', '--clear-env-variables' ]
+    id: 'clear-composer-environment'
+  - name: gcr.io/cloud-builders/gcloud
+    args: [ 'composer', 'environments', 'update', '${_COMPOSER_ENV_NAME}', '--location', '${_COMPOSER_REGION}', '--update-env-variables=gcp_project=${PROJECT_ID},gcp_region=${_COMPOSER_REGION},gcp_zone=${_COMPOSER_ZONE_ID},dataflow_jar_location=${_DATAFLOW_JAR_BUCKET},dataflow_jar_file=dlp-rdb-bq-import-dataflow.jar,dataflow_staging_bucket=${_DATAFLOW_STAGING_BUCKET}' ]
     id: 'set-composer-environment'
   - name: gcr.io/cloud-builders/gcloud
     args: [ 'composer', 'environments', 'storage', 'dags', 'import', '--environment', '${_COMPOSER_ENV_NAME}', '--location', '${_COMPOSER_REGION}', '--source', '*.py' ]
