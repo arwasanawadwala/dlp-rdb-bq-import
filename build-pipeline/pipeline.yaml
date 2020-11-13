@@ -21,7 +21,13 @@ steps:
       - '-c'
       - |
         ${_GET_COMPOSER_DAG_BUCKET} > /workspace/composer_dag_bucket_path.txt \
-        && echo "{gcp_project: ${PROJECT_ID}, gcp_region: ${_COMPOSER_REGION}, gcp_zone: ${_COMPOSER_ZONE_ID},          dataflow_jar_location: ${_DATAFLOW_JAR_BUCKET}, dataflow_jar_file: dlp-rdb-bq-import-dataflow.jar, dataflow_staging_bucket: ${_DATAFLOW_STAGING_BUCKET}}" > /workspace/composer_env.json
+        && echo "{
+        gcp_project=${PROJECT_ID},
+        gcp_region=${_COMPOSER_REGION},
+        gcp_zone=${_COMPOSER_ZONE_ID},
+        dataflow_jar_location=${_DATAFLOW_JAR_BUCKET},
+        dataflow_jar_file=dlp-rdb-bq-import-dataflow.jar,
+        dataflow_staging_bucket=${_DATAFLOW_STAGING_BUCKET}}" > /workspace/composer_env.json
     dir: '$REPO_NAME'
     id: 'get_composer_dag_bucket'
   - name: gcr.io/cloud-builders/gcloud
@@ -32,12 +38,15 @@ steps:
     dir: '$REPO_NAME/build/libs'
     id: 'deploy-jar'
   - name: gcr.io/cloud-builders/gcloud
-    args: [ 'composer', 'environments', 'run', '${_COMPOSER_ENV_NAME}', '--location', '${_COMPOSER_REGION}','variables', '--', '--i', '/workspace/composer_env.json'
-    ]
+    args: [ 'composer', 'environments', 'create', '${_COMPOSER_ENV_NAME}', '--location', '${_COMPOSER_REGION}', '--update-env-variables=gcp_project=${PROJECT_ID},gcp_region=${_COMPOSER_REGION},gcp_zone=${_COMPOSER_ZONE_ID},dataflow_jar_location=${_DATAFLOW_JAR_BUCKET},dataflow_jar_file=dlp-rdb-bq-import-dataflow.jar,dataflow_staging_bucket=${_DATAFLOW_STAGING_BUCKET}' ]
     id: 'set-composer-environment'
-  - name: gcr.io/cloud-builders/gsutil
-    args: [ 'cp', '*.py', 'gs://us-central1-dlp-pipeline-co-3df29c1b-bucket/dags' ]
+  - name: gcr.io/cloud-builders/gcloud
+    args: [ 'composer', 'environments', 'storage', 'dags', 'import', '--environment', '${_COMPOSER_ENV_NAME}', '--location', '${_COMPOSER_REGION}', '--source', '*.py' ]
     dir: '$REPO_NAME/workflow-dags'
+    #    id: 'set-composer-environment'
+    #  - name: gcr.io/cloud-builders/gsutil
+    #    args: [ 'cp', '*.py', 'gs://us-central1-dlp-pipeline-co-3df29c1b-bucket/dags' ]
+    #    dir: '$REPO_NAME/workflow-dags'
     id: 'deploy-processing-pipeline'
   - name: gcr.io/cloud-builders/gcloud
     entrypoint: 'bash'
