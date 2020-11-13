@@ -18,7 +18,7 @@ import datetime
 from airflow import models
 from airflow.contrib.operators.dataflow_operator import DataFlowJavaOperator
 
-dataflow_staging_bucket = 'gs://%s/staging' % (
+dataflow_staging_bucket = 'gs://%s' % (
     models.Variable.get('dataflow_staging_bucket'))
 
 dataflow_jar_location = 'gs://%s/%s' % (
