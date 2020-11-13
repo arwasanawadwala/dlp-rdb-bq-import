@@ -15,19 +15,19 @@
 """
 import datetime
 
-from airflow import models
 from airflow.contrib.operators.dataflow_operator import DataFlowJavaOperator
+from airflow.models import Variable, DAG
 
 dataflow_staging_bucket = 'gs://%s' % (
-    models.Variable.get('dataflow_staging_bucket'))
+    Variable.get('dataflow_staging_bucket'))
 
 dataflow_jar_location = 'gs://%s/%s' % (
-    models.Variable.get('dataflow_jar_location'),
-    models.Variable.get('dataflow_jar_file'))
+    Variable.get('dataflow_jar_location'),
+    Variable.get('dataflow_jar_file'))
 
-project = models.Variable.get('gcp_project')
-region = models.Variable.get('gcp_region')
-zone = models.Variable.get('gcp_zone')
+project = Variable.get('gcp_project')
+region = Variable.get('gcp_region')
+zone = Variable.get('gcp_zone')
 
 yesterday = datetime.datetime.combine(
     datetime.datetime.today() - datetime.timedelta(1),
@@ -43,7 +43,7 @@ default_args = {
     }
 }
 
-with models.DAG(
+with DAG(
         'db-import',
         schedule_interval=None,
         default_args=default_args) as dag:
