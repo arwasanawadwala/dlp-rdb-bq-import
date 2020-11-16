@@ -20,13 +20,16 @@ steps:
     id: 'deploy-jar'
   - name: gcr.io/cloud-builders/gcloud
     entrypoint: 'bash'
-    args: ['-c', 'echo { "gcp_project": "${PROJECT_ID}", \
-     "gcp_region": "${_COMPOSER_REGION}", \
-     "gcp_zone": "${_COMPOSER_ZONE_ID}", \
-     "dataflow_jar_location": "${_DATAFLOW_JAR_BUCKET}", \
-     "dataflow_jar_file": "dlp-rdb-bq-import-dataflow.jar", \
-     "dataflow_staging_bucket": "${_DATAFLOW_STAGING_BUCKET}"} > \
-      /workspace/composer_variables.json' ]
+    args:
+      - '-c'
+      - |
+        echo { "gcp_project": "${PROJECT_ID}", \
+        "gcp_region": "${_COMPOSER_REGION}", \
+        "gcp_zone": "${_COMPOSER_ZONE_ID}", \
+        "dataflow_jar_location": "${_DATAFLOW_JAR_BUCKET}", \
+        "dataflow_jar_file": "dlp-rdb-bq-import-dataflow.jar", \
+        "dataflow_staging_bucket": "${_DATAFLOW_STAGING_BUCKET}"} > \
+        /workspace/composer_variables.json ]
     id: 'prepare-composer-env-json'
   - name: gcr.io/cloud-builders/gcloud
     args: [ 'composer', 'environments', 'storage', 'data', 'import', '--environment', '${_COMPOSER_ENV_NAME}', '--location', '${_COMPOSER_REGION}', '--source', '/workspace/composer_variables.json' ]
