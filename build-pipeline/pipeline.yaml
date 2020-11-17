@@ -27,7 +27,7 @@ steps:
         \"gcp_region\":\"${_COMPOSER_REGION}\", \
         \"gcp_zone\":\"${_COMPOSER_ZONE_ID}\", \
         \"dataflow_jar_location\":\"${_DATAFLOW_JAR_BUCKET}\", \
-        \"dataflow_jar_file\":\"dlp-rdb-bq-import-dataflow.jar\", \
+        \"dataflow_jar_file\":\"dlp-rdb-bq-import-0.1.0.jar\", \
         \"dataflow_staging_bucket\":\"${_DATAFLOW_STAGING_BUCKET}\"} > /workspace/composer_variables.json && \
         cat /workspace/composer_variables.json
     id: 'prepare-composer-env-json'
