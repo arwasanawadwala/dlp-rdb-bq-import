@@ -57,14 +57,6 @@ with DAG(
         options={
             'configFilePath': jar_config_location + "/" + "dbImportConfig.yml",
             'autoscalingAlgorithm': 'THROUGHPUT_BASED',
-            'maxNumWorkers': '3',
-            'project': 'sookplatformspikes',
-            'runner': 'DirectRunner',
-            'dataSet': 'spike_dlp_oesc_mysql_migration',
-            'JDBCSpec': 'jdbc:mysql://(host=localhost,port=3306,user=root,password=password)/oesc_on_prem?encrypt=true&trustServerCertificate=true',
-            'tempLocation': 'gs://spike_oesc/spike_dpl_template_oesc.json',
-            'offsetCount': '500',
-            'DLPConfigBucket': 'spike_oesc',
-            'DLPConfigObject': 'spike_dpl_template_oesc.json'
+            'maxNumWorkers': '3'
         }
     )
