@@ -25,6 +25,9 @@ dataflow_jar_location = 'gs://%s/%s' % (
     Variable.get('dataflow_jar_location'),
     Variable.get('dataflow_jar_file'))
 
+jar_config_location = 'gs://%s/configs' % (
+    Variable.get('dataflow_jar_location'))
+
 project = Variable.get('gcp_project')
 region = Variable.get('gcp_region')
 zone = Variable.get('gcp_zone')
@@ -52,6 +55,7 @@ with DAG(
         jar=dataflow_jar_location,
         start_date=yesterday,
         options={
+            'configFilePath': jar_config_location + "/" + "dbImportConfig.yml",
             'autoscalingAlgorithm': 'THROUGHPUT_BASED',
             'maxNumWorkers': '3',
             'project': 'sookplatformspikes',

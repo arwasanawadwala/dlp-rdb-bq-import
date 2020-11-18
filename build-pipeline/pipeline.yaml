@@ -18,6 +18,10 @@ steps:
     args: [ 'cp', '*.jar', 'gs://${_DATAFLOW_JAR_BUCKET}/' ]
     dir: '$REPO_NAME/build/libs'
     id: 'deploy-jar'
+  - name: gcr.io/cloud-builders/gsutil
+    args: [ 'cp', 'dbImportConfig.yml', 'gs://${_DATAFLOW_JAR_BUCKET}/configs' ]
+    dir: '$REPO_NAME/src/main/resources'
+    id: 'copy-jar-config'
   - name: gcr.io/cloud-builders/gcloud
     entrypoint: 'bash'
     args:
