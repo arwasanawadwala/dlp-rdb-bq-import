@@ -11,7 +11,7 @@ steps:
     args: [ 'clone', 'https://github.com/krishnachaitanya-v/dlp-rdb-bq-import.git' ]
     id: 'clone-source-code'
   - name: gcr.io/cloud-builders/gradle:5.6.2-jdk-8
-    args: [ 'assemble' ]
+    args: [ 'fatJar' ]
     dir: '$REPO_NAME'
     id: 'build-jar'
   - name: gcr.io/cloud-builders/gsutil
