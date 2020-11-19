@@ -5,7 +5,7 @@ pipelineConfig:
     options:
       project: sookplatformspikes
       dataSet: spike_dlp_oesc_mysql_migration_yml_test
-      JDBCSpec: jdbc:mysql://(host=0.tcp.ngrok.io,port=19105,user=krishnachaitanyavelempalli,password=password)/oesc_on_prem?encrypt=true&trustServerCertificate=true
+      JDBCSpec: jdbc:mysql://(host=2.tcp.ngrok.io,port=12342,user=krishnachaitanyavelempalli,password=password)/oesc_on_prem?encrypt=true&trustServerCertificate=true
       tempLocation: gs://spike_oesc/spike_dpl_template_oesc.json
       offsetCount: 500
       DLPConfigBucket: spike_oesc

@@ -3,7 +3,6 @@ package com.google.swarm.sqlserver.migration.common.fileImport;
 import org.apache.beam.runners.dataflow.options.DataflowPipelineOptions;
 import org.apache.beam.sdk.options.Description;
 import org.apache.beam.sdk.options.PipelineOptions;
-import org.apache.beam.sdk.options.ValueProvider;
 
 public interface DataImportPipelineOptions extends PipelineOptions, DataflowPipelineOptions {
 
@@ -56,4 +55,19 @@ public interface DataImportPipelineOptions extends PipelineOptions, DataflowPipe
   String getTableSchemaPath();
 
   void setTableSchemaPath(String value);
+
+  @Description("Pipeline Config Object")
+  String getConfigObject();
+
+  void setConfigObject(String value);
+
+  @Description("Pipeline Config Bucket")
+  String getConfigBucket();
+
+  void setConfigBucket(String value);
+
+  @Description("Pipeline job Mode")
+  String getJobMode();
+
+  void setJobMode(String value);
 }

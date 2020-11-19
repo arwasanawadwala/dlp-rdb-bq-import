@@ -55,7 +55,9 @@ with DAG(
         jar=dataflow_jar_location,
         start_date=yesterday,
         options={
-            'configFilePath': jar_config_location + "/" + "dbImportConfig.yml",
+            'jobMode': 'cluster',
+            'configObject': 'configs/dbImportConfig.yml',
+            'configBucket': 'sookplatformspikes-artifacts',
             'autoscalingAlgorithm': 'THROUGHPUT_BASED',
             'maxNumWorkers': '3'
         }
